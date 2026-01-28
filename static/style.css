@@ -1,0 +1,727 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.admin-container {
+    max-width: 900px;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.subtitle {
+    color: #3498db;
+    text-align: center;
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+
+.intro {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+/* Rating Scale Legend */
+.rating-scale-legend {
+    background: #e8f4fc;
+    border: 1px solid #bee5f7;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.rating-scale-legend h3 {
+    color: #2c3e50;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.scale-toggle {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.scale-toggle-icon {
+    color: #3498db;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.rating-scale-legend ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.rating-scale-legend li {
+    color: #555;
+    font-size: 14px;
+    padding: 4px 0;
+}
+
+.rating-scale-legend li strong {
+    color: #3498db;
+    margin-right: 5px;
+}
+
+/* Survey Form */
+.survey-form {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.question {
+    margin-bottom: 25px;
+}
+
+.question-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.question-description {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.required {
+    color: #e74c3c;
+}
+
+.text-input,
+.textarea-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.text-input:focus,
+.textarea-input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+/* Rating */
+.rating-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.rating-group-10 {
+    gap: 6px;
+}
+
+.rating-label {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.rating-label input {
+    display: none;
+}
+
+/* Touch feedback */
+.rating-label:active .star {
+    transform: scale(0.95);
+}
+
+.star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    font-weight: bold;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.rating-group-10 .star {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+}
+
+.rating-label input:checked + .star {
+    background: #3498db;
+    border-color: #3498db;
+    color: white;
+}
+
+.rating-label:hover .star {
+    border-color: #3498db;
+}
+
+/* Options (Radio/Checkbox) */
+.options-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.option-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.option-label:hover {
+    background: #f8f9fa;
+}
+
+.option-label:active {
+    background: #e8f4fc;
+}
+
+.option-label input {
+    width: 18px;
+    height: 18px;
+}
+
+/* Submit Button */
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 20px;
+}
+
+.submit-btn:hover {
+    background: #2980b9;
+}
+
+.submit-btn:active {
+    transform: scale(0.98);
+}
+
+/* Thank You Page */
+.thanks-message {
+    background: white;
+    padding: 60px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.thanks-message p {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background: #2980b9;
+}
+
+/* Admin Page */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.admin-header h1 {
+    margin-bottom: 0;
+}
+
+.response-count {
+    color: #666;
+    font-size: 14px;
+}
+
+.responses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.response-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.response-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.response-id {
+    font-weight: bold;
+    color: #3498db;
+}
+
+.response-date {
+    color: #666;
+    font-size: 14px;
+    flex-grow: 1;
+}
+
+.delete-form {
+    margin: 0;
+}
+
+.delete-btn {
+    padding: 5px 10px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+}
+
+.response-data {
+    padding: 20px;
+}
+
+.data-row {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.data-row:last-child {
+    border-bottom: none;
+}
+
+.data-label {
+    flex: 0 0 200px;
+    font-weight: 600;
+    color: #555;
+}
+
+.data-value {
+    flex: 1;
+    color: #333;
+}
+
+.no-responses {
+    background: white;
+    padding: 60px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.no-responses p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Charts Section */
+.chart-section {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
+}
+
+.chart-section h2 {
+    color: #2c3e50;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.chart-container {
+    height: 300px;
+}
+
+/* Topic Bars */
+.topic-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.topic-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.topic-label {
+    flex: 0 0 250px;
+    font-size: 14px;
+    color: #555;
+}
+
+.bar-container {
+    flex: 1;
+    height: 30px;
+    background: #eee;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.bar-value {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Collapsible Responses */
+.responses-section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.collapsible-header {
+    color: #2c3e50;
+    font-size: 18px;
+    padding: 20px 25px;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.collapsible-header:hover {
+    background: #f0f0f0;
+}
+
+#toggle-icon {
+    font-size: 24px;
+    color: #3498db;
+}
+
+.responses-section .responses-list {
+    padding: 20px;
+    gap: 15px;
+}
+
+/* Usage Chart (Pie/Doughnut) */
+.usage-chart-row {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.usage-chart-container {
+    width: 200px;
+    height: 200px;
+}
+
+.usage-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+.legend-label {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Word Cloud */
+#wordcloud-container {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 20px;
+}
+
+#wordcloud {
+    width: 100%;
+    height: 100%;
+}
+
+.text-responses-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.response-chip {
+    background: #e8f4fc;
+    color: #2c3e50;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    border: 1px solid #bee5f7;
+}
+
+/* Responsive - Mobile First */
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    .intro {
+        font-size: 14px;
+    }
+
+    /* Collapsible rating scale on mobile */
+    .rating-scale-legend {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .rating-scale-legend h3 {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .rating-scale-legend li {
+        font-size: 13px;
+        padding: 3px 0;
+    }
+
+    /* Form adjustments */
+    .survey-form {
+        padding: 20px 15px;
+    }
+
+    .question {
+        margin-bottom: 30px;
+    }
+
+    .question-label {
+        font-size: 15px;
+        line-height: 1.4;
+        margin-bottom: 8px;
+    }
+
+    /* Rating buttons - larger touch targets */
+    .rating-group-10 {
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .rating-group-10 .star {
+        width: 44px;
+        height: 44px;
+        font-size: 14px;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Active state for touch */
+    .rating-label:active .star {
+        transform: scale(0.95);
+        background: #ecf0f1;
+    }
+
+    .rating-label input:checked + .star {
+        transform: scale(1);
+    }
+
+    /* Multiple choice - larger touch targets */
+    .option-label {
+        padding: 15px;
+        font-size: 15px;
+        min-height: 50px;
+    }
+
+    .option-label input {
+        width: 22px;
+        height: 22px;
+    }
+
+    /* Textarea */
+    .textarea-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 15px;
+    }
+
+    .text-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 15px;
+    }
+
+    /* Submit button */
+    .submit-btn {
+        padding: 18px;
+        font-size: 17px;
+        margin-top: 25px;
+    }
+
+    /* Admin page */
+    .admin-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .chart-section {
+        padding: 15px;
+    }
+
+    .chart-section h2 {
+        font-size: 16px;
+    }
+
+    .data-row {
+        flex-direction: column;
+    }
+
+    .data-label {
+        flex: none;
+        margin-bottom: 5px;
+    }
+
+    .topic-bar-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 5px;
+    }
+
+    .topic-label {
+        flex: none;
+        font-size: 13px;
+    }
+
+    .usage-chart-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .usage-chart-container {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+    }
+
+    .usage-legend {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    #wordcloud-container {
+        height: 200px;
+    }
+
+    .response-chip {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 380px) {
+    .rating-group-10 {
+        gap: 5px;
+    }
+
+    .rating-group-10 .star {
+        width: 38px;
+        height: 38px;
+        font-size: 13px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .question-label {
+        font-size: 14px;
+    }
+}

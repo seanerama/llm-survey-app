@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3498db">
+    <title>{{ config.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ config.title }}</h1>
+        {% if config.subtitle %}
+        <h2 class="subtitle">{{ config.subtitle }}</h2>
+        {% endif %}
+
+        {% if config.intro %}
+        <p class="intro">{{ config.intro }}</p>
+        {% endif %}
+
+        {% if config.rating_scale %}
+        <div class="rating-scale-legend" id="scale-legend">
+            <h3 class="scale-toggle" onclick="toggleScale()">
+                Confidence Scale
+                <span class="scale-toggle-icon" id="scale-icon">−</span>
+            </h3>
+            <ul id="scale-list">
+                {% for level in config.rating_scale %}
+                <li><strong>{{ level.value }}</strong> - {{ level.label }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <script>
+            function toggleScale() {
+                const list = document.getElementById('scale-list');
+                const icon = document.getElementById('scale-icon');
+                if (list.style.display === 'none') {
+                    list.style.display = 'block';
+                    icon.textContent = '−';
+                } else {
+                    list.style.display = 'none';
+                    icon.textContent = '+';
+                }
+            }
+            // Auto-collapse on mobile
+            if (window.innerWidth <= 768) {
+                document.getElementById('scale-list').style.display = 'none';
+                document.getElementById('scale-icon').textContent = '+';
+            }
+        </script>
+        {% endif %}
+
+        <form action="{{ url_for('submit') }}" method="POST" class="survey-form">
+            {% for question in config.questions %}
+            <div class="question">
+                <label class="question-label">
+                    {{ question.label }}
+                    {% if question.required %}<span class="required">*</span>{% endif %}
+                </label>
+
+                {% if question.description %}
+                <p class="question-description">{{ question.description }}</p>
+                {% endif %}
+
+                {% if question.type == 'text' %}
+                <input type="text" name="{{ question.id }}"
+                       {% if question.required %}required{% endif %}
+                       class="text-input">
+
+                {% elif question.type == 'textarea' %}
+                <textarea name="{{ question.id }}" rows="4"
+                          {% if question.required %}required{% endif %}
+                          class="textarea-input"></textarea>
+
+                {% elif question.type == 'rating' %}
+                <div class="rating-group rating-group-10">
+                    {% for i in range(1, question.max_rating + 1) %}
+                    <label class="rating-label">
+                        <input type="radio" name="{{ question.id }}" value="{{ i }}"
+                               {% if question.required %}required{% endif %}>
+                        <span class="star">{{ i }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                {% elif question.type == 'multiple_choice' %}
+                <div class="options-group">
+                    {% for option in question.options %}
+                    <label class="option-label">
+                        <input type="radio" name="{{ question.id }}" value="{{ option }}"
+                               {% if question.required %}required{% endif %}>
+                        {{ option }}
+                    </label>
+                    {% endfor %}
+                </div>
+
+                {% elif question.type == 'checkbox' %}
+                <div class="options-group">
+                    {% for option in question.options %}
+                    <label class="option-label">
+                        <input type="checkbox" name="{{ question.id }}" value="{{ option }}">
+                        {{ option }}
+                    </label>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

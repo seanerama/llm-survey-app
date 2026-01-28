@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Survey Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
+</head>
+<body>
+    <div class="container admin-container">
+        <div class="admin-header">
+            <h1>{{ config.title }}</h1>
+            <p class="response-count">{{ responses|length }} response(s)</p>
+        </div>
+
+        {% if responses %}
+        <!-- Average Confidence Chart -->
+        <div class="chart-section">
+            <h2>Average Confidence by Topic</h2>
+            <div class="chart-container">
+                <canvas id="avgChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Individual Topic Breakdown -->
+        <div class="chart-section">
+            <h2>Topic Breakdown</h2>
+            <div class="topic-bars">
+                {% for question in config.questions %}
+                {% if question.type == 'rating' %}
+                <div class="topic-bar-row">
+                    <div class="topic-label">{{ question.label }}</div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: {{ (stats[question.id].average / question.max_rating * 100)|int }}%"></div>
+                        <span class="bar-value">{{ stats[question.id].average }} / {{ question.max_rating }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- AI Assistant Usage -->
+        {% if mc_stats.get('ai_assistant_used') %}
+        <div class="chart-section">
+            <h2>Have you used an AI coding assistant?</h2>
+            <div class="usage-chart-row">
+                <div class="usage-chart-container">
+                    <canvas id="usageChart"></canvas>
+                </div>
+                <div class="usage-legend">
+                    {% for option, count in mc_stats['ai_assistant_used'].items() %}
+                    <div class="legend-item">
+                        <span class="legend-color" data-option="{{ option }}"></span>
+                        <span class="legend-label">{{ option }}: {{ count }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Word Cloud for App Wishlist -->
+        {% if text_responses %}
+        <div class="chart-section">
+            <h2>Apps People Want to Chat With / Automate</h2>
+            <div id="wordcloud-container">
+                <canvas id="wordcloud"></canvas>
+            </div>
+            <div class="text-responses-list">
+                {% for text in text_responses %}
+                <span class="response-chip">{{ text }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Individual Responses (collapsible) -->
+        <div class="responses-section">
+            <h2 class="collapsible-header" onclick="toggleResponses()">
+                Individual Responses
+                <span id="toggle-icon">+</span>
+            </h2>
+            <div id="responses-list" class="responses-list" style="display: none;">
+                {% for response in responses %}
+                <div class="response-card">
+                    <div class="response-header">
+                        <span class="response-id">#{{ response.id }}</span>
+                        <span class="response-date">{{ response.submitted_at }}</span>
+                        <form action="{{ url_for('delete_response', response_id=response.id) }}" method="POST" class="delete-form">
+                            <button type="submit" class="delete-btn" onclick="return confirm('Delete this response?')">Delete</button>
+                        </form>
+                    </div>
+                    <div class="response-data">
+                        {% for question in config.questions %}
+                        <div class="data-row">
+                            <span class="data-label">{{ question.label }}:</span>
+                            <span class="data-value">
+                                {% if question.type == 'checkbox' %}
+                                    {{ response.data.get(question.id, [])|join(', ') or 'None selected' }}
+                                {% elif question.type == 'rating' %}
+                                    {{ response.data.get(question.id, 'N/A') }} / {{ question.max_rating }}
+                                {% else %}
+                                    {{ response.data.get(question.id, 'N/A') or 'N/A' }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <script>
+            // Toggle individual responses
+            function toggleResponses() {
+                const list = document.getElementById('responses-list');
+                const icon = document.getElementById('toggle-icon');
+                if (list.style.display === 'none') {
+                    list.style.display = 'flex';
+                    icon.textContent = '−';
+                } else {
+                    list.style.display = 'none';
+                    icon.textContent = '+';
+                }
+            }
+
+            // Confidence Chart data
+            const labels = [
+                {% for question in config.questions %}
+                {% if question.type == 'rating' %}
+                "{{ question.label[:30] }}...",
+                {% endif %}
+                {% endfor %}
+            ];
+
+            const averages = [
+                {% for question in config.questions %}
+                {% if question.type == 'rating' %}
+                {{ stats[question.id].average }},
+                {% endif %}
+                {% endfor %}
+            ];
+
+            // Create confidence bar chart
+            const ctx = document.getElementById('avgChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Average Confidence',
+                        data: averages,
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            {% if mc_stats.get('ai_assistant_used') %}
+            // AI Assistant Usage Pie Chart
+            const usageCtx = document.getElementById('usageChart').getContext('2d');
+            new Chart(usageCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [{% for opt in mc_stats['ai_assistant_used'].keys() %}"{{ opt }}",{% endfor %}],
+                    datasets: [{
+                        data: [{% for count in mc_stats['ai_assistant_used'].values() %}{{ count }},{% endfor %}],
+                        backgroundColor: ['#2ecc71', '#e74c3c', '#f39c12'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Set legend colors
+            document.querySelectorAll('.legend-color').forEach((el, i) => {
+                const colors = ['#2ecc71', '#e74c3c', '#f39c12'];
+                el.style.backgroundColor = colors[i];
+            });
+            {% endif %}
+
+            {% if text_responses %}
+            // Word Cloud
+            const textResponses = [
+                {% for text in text_responses %}
+                "{{ text|replace('"', '\\"') }}",
+                {% endfor %}
+            ];
+
+            // Count word frequency
+            const wordCounts = {};
+            textResponses.forEach(text => {
+                const words = text.toLowerCase().split(/[\s,]+/);
+                words.forEach(word => {
+                    word = word.replace(/[^a-zA-Z0-9]/g, '');
+                    if (word.length > 2) {
+                        wordCounts[word] = (wordCounts[word] || 0) + 1;
+                    }
+                });
+            });
+
+            // Also count full responses for better visualization
+            textResponses.forEach(text => {
+                const clean = text.trim();
+                if (clean) {
+                    wordCounts[clean] = (wordCounts[clean] || 0) + 2;
+                }
+            });
+
+            // Convert to wordcloud format
+            const wordList = Object.entries(wordCounts)
+                .map(([word, count]) => [word, count * 20])
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 50);
+
+            if (wordList.length > 0) {
+                const canvas = document.getElementById('wordcloud');
+                canvas.width = canvas.parentElement.offsetWidth;
+                canvas.height = 300;
+
+                WordCloud(canvas, {
+                    list: wordList,
+                    gridSize: 8,
+                    weightFactor: 3,
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    color: function() {
+                        const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6', '#1abc9c'];
+                        return colors[Math.floor(Math.random() * colors.length)];
+                    },
+                    rotateRatio: 0.3,
+                    backgroundColor: 'transparent'
+                });
+            }
+            {% endif %}
+        </script>
+
+        {% else %}
+        <div class="no-responses">
+            <p>No responses yet.</p>
+            <a href="{{ url_for('survey') }}" class="btn">Go to Survey</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
