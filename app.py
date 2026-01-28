@@ -203,7 +203,7 @@ Make it fun and shareable - something they'd be proud to use as a profile pictur
 
         # Upload the image and generate
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp-image-generation",
+            model="gemini-3-pro-image-preview",
             contents=[
                 types.Content(
                     parts=[
