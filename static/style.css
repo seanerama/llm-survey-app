@@ -1098,6 +1098,13 @@ h1 {
 .avatars-section h2 {
     color: #2c3e50;
     font-size: 18px;
+    margin: 0;
+}
+
+.avatars-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 

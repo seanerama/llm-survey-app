@@ -478,6 +478,30 @@ def delete_response(response_id):
     return redirect(url_for('admin'))
 
 
+@app.route('/admin/delete-avatar/<uuid:avatar_id>', methods=['POST'])
+def delete_avatar(avatar_id):
+    """Delete a failed avatar so user can retry."""
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('DELETE FROM avatars WHERE id = %s', (str(avatar_id),))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for('admin'))
+
+
+@app.route('/admin/clear-failed-avatars', methods=['POST'])
+def clear_failed_avatars():
+    """Delete all failed avatars."""
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM avatars WHERE status = 'failed'")
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for('admin'))
+
+
 # Initialize database on import (for production with gunicorn)
 if DATABASE_URL:
     init_db()

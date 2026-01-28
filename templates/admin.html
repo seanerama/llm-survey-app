@@ -65,7 +65,12 @@
         <!-- Generated Avatars -->
         {% if avatars %}
         <div class="avatars-section">
-            <h2>Generated Avatars ({{ avatars|length }})</h2>
+            <div class="avatars-header">
+                <h2>Generated Avatars ({{ avatars|length }})</h2>
+                <form action="{{ url_for('clear_failed_avatars') }}" method="POST" style="display: inline;">
+                    <button type="submit" class="delete-btn" onclick="return confirm('Delete all failed avatars?')">Clear Failed</button>
+                </form>
+            </div>
             <div class="avatars-grid">
                 {% for avatar in avatars %}
                 <div class="avatar-card">
@@ -81,6 +86,11 @@
                     <div class="avatar-card-info">
                         <div class="avatar-card-email">{{ avatar.email }}</div>
                         <span class="avatar-card-status {{ avatar.status }}">{{ avatar.status }}</span>
+                        {% if avatar.status == 'failed' %}
+                        <form action="{{ url_for('delete_avatar', avatar_id=avatar.id) }}" method="POST" style="margin-top: 5px;">
+                            <button type="submit" class="delete-btn" style="font-size: 10px; padding: 3px 8px;">Delete</button>
+                        </form>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
