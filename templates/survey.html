@@ -50,7 +50,7 @@
         </script>
         {% endif %}
 
-        <form action="{{ url_for('submit') }}" method="POST" class="survey-form">
+        <form action="{{ url_for('submit') }}" method="POST" class="survey-form" id="survey-form">
             {% for question in config.questions %}
             <div class="question">
                 <label class="question-label">
@@ -107,8 +107,227 @@
             </div>
             {% endfor %}
 
-            <button type="submit" class="submit-btn">Submit</button>
+            <!-- Avatar Generation Section -->
+            <div class="question avatar-section">
+                <div class="avatar-header">
+                    <h3>Bonus: Get Your Wizard Avatar!</h3>
+                    <p class="avatar-description">
+                        Take a selfie and we'll transform you into a <strong>Vibe Coding Network Wizard</strong>
+                        using AI. You'll receive your avatar via email!
+                    </p>
+                </div>
+
+                <div class="avatar-form">
+                    <label class="question-label">
+                        Email Address
+                        <span class="optional-tag">(required for avatar)</span>
+                    </label>
+                    <input type="email" name="email" id="email-input" class="text-input"
+                           placeholder="your@email.com">
+                    <p class="email-note" id="email-note"></p>
+
+                    <label class="question-label" style="margin-top: 1rem;">
+                        Take a Selfie
+                        <span class="optional-tag">(optional)</span>
+                    </label>
+
+                    <div class="camera-container" id="camera-container">
+                        <!-- Camera not started yet -->
+                        <div class="camera-placeholder" id="camera-placeholder">
+                            <button type="button" class="camera-start-btn" id="start-camera-btn">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                    <circle cx="12" cy="13" r="4"/>
+                                </svg>
+                                <span>Tap to Open Camera</span>
+                            </button>
+                        </div>
+
+                        <!-- Video preview (hidden until camera starts) -->
+                        <div class="camera-active" id="camera-active" style="display: none;">
+                            <video id="camera-preview" autoplay playsinline></video>
+                            <div class="camera-controls">
+                                <button type="button" class="capture-btn" id="capture-btn">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="12" r="10"/>
+                                    </svg>
+                                </button>
+                                <button type="button" class="switch-camera-btn" id="switch-camera-btn">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M3 4l17 17"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Photo preview (hidden until photo taken) -->
+                        <div class="photo-preview" id="photo-preview" style="display: none;">
+                            <img id="captured-photo" alt="Your selfie">
+                            <div class="photo-controls">
+                                <button type="button" class="retake-btn" id="retake-btn">Retake</button>
+                                <span class="photo-ready">Ready!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="selfie_data" id="selfie-data">
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Survey</button>
         </form>
     </div>
+
+    <canvas id="photo-canvas" style="display: none;"></canvas>
+
+    <script>
+        // Camera handling
+        let stream = null;
+        let facingMode = 'user'; // Front camera by default
+
+        const startCameraBtn = document.getElementById('start-camera-btn');
+        const cameraPlaceholder = document.getElementById('camera-placeholder');
+        const cameraActive = document.getElementById('camera-active');
+        const photoPreview = document.getElementById('photo-preview');
+        const videoElement = document.getElementById('camera-preview');
+        const captureBtn = document.getElementById('capture-btn');
+        const switchCameraBtn = document.getElementById('switch-camera-btn');
+        const retakeBtn = document.getElementById('retake-btn');
+        const capturedPhoto = document.getElementById('captured-photo');
+        const selfieDataInput = document.getElementById('selfie-data');
+        const photoCanvas = document.getElementById('photo-canvas');
+        const emailInput = document.getElementById('email-input');
+        const emailNote = document.getElementById('email-note');
+
+        // Check email on blur
+        emailInput.addEventListener('blur', async function() {
+            const email = this.value.trim();
+            if (!email) {
+                emailNote.textContent = '';
+                return;
+            }
+
+            try {
+                const response = await fetch('/check-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await response.json();
+
+                emailNote.textContent = data.message;
+                emailNote.className = data.allowed ? 'email-note success' : 'email-note warning';
+            } catch (e) {
+                console.error('Email check failed:', e);
+            }
+        });
+
+        // Start camera
+        startCameraBtn.addEventListener('click', async function() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: facingMode, width: { ideal: 640 }, height: { ideal: 640 } },
+                    audio: false
+                });
+                videoElement.srcObject = stream;
+                cameraPlaceholder.style.display = 'none';
+                cameraActive.style.display = 'block';
+            } catch (err) {
+                console.error('Camera access denied:', err);
+                alert('Could not access camera. Please check permissions and try again.');
+            }
+        });
+
+        // Switch camera (front/back)
+        switchCameraBtn.addEventListener('click', async function() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            facingMode = facingMode === 'user' ? 'environment' : 'user';
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: facingMode, width: { ideal: 640 }, height: { ideal: 640 } },
+                    audio: false
+                });
+                videoElement.srcObject = stream;
+            } catch (err) {
+                console.error('Camera switch failed:', err);
+            }
+        });
+
+        // Capture photo
+        captureBtn.addEventListener('click', function() {
+            const ctx = photoCanvas.getContext('2d');
+
+            // Make it square
+            const size = Math.min(videoElement.videoWidth, videoElement.videoHeight);
+            photoCanvas.width = size;
+            photoCanvas.height = size;
+
+            // Center crop
+            const offsetX = (videoElement.videoWidth - size) / 2;
+            const offsetY = (videoElement.videoHeight - size) / 2;
+
+            // Mirror if using front camera
+            if (facingMode === 'user') {
+                ctx.translate(size, 0);
+                ctx.scale(-1, 1);
+            }
+
+            ctx.drawImage(videoElement, offsetX, offsetY, size, size, 0, 0, size, size);
+
+            // Get data URL
+            const dataUrl = photoCanvas.toDataURL('image/jpeg', 0.8);
+            selfieDataInput.value = dataUrl;
+            capturedPhoto.src = dataUrl;
+
+            // Stop camera and show preview
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            cameraActive.style.display = 'none';
+            photoPreview.style.display = 'block';
+        });
+
+        // Retake photo
+        retakeBtn.addEventListener('click', async function() {
+            selfieDataInput.value = '';
+            photoPreview.style.display = 'none';
+
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: facingMode, width: { ideal: 640 }, height: { ideal: 640 } },
+                    audio: false
+                });
+                videoElement.srcObject = stream;
+                cameraActive.style.display = 'block';
+            } catch (err) {
+                console.error('Camera restart failed:', err);
+                cameraPlaceholder.style.display = 'block';
+            }
+        });
+
+        // Clean up camera on page unload
+        window.addEventListener('beforeunload', function() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        });
+
+        // Form validation
+        document.getElementById('survey-form').addEventListener('submit', function(e) {
+            const email = emailInput.value.trim();
+            const selfie = selfieDataInput.value;
+
+            // If they have a selfie but no email, warn them
+            if (selfie && !email) {
+                if (!confirm('You took a selfie but didn\'t enter an email. Your avatar won\'t be generated. Continue anyway?')) {
+                    e.preventDefault();
+                    emailInput.focus();
+                    return;
+                }
+            }
+        });
+    </script>
 </body>
 </html>

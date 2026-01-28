@@ -62,6 +62,32 @@
         </div>
         {% endif %}
 
+        <!-- Generated Avatars -->
+        {% if avatars %}
+        <div class="avatars-section">
+            <h2>Generated Avatars ({{ avatars|length }})</h2>
+            <div class="avatars-grid">
+                {% for avatar in avatars %}
+                <div class="avatar-card">
+                    {% if avatar.image_data %}
+                    <a href="{{ url_for('view_avatar', avatar_id=avatar.id) }}" target="_blank">
+                        <img src="data:image/png;base64,{{ avatar.image_data }}" alt="Avatar">
+                    </a>
+                    {% else %}
+                    <div class="avatar-placeholder">
+                        {% if avatar.status == 'pending' %}Processing...{% else %}Failed{% endif %}
+                    </div>
+                    {% endif %}
+                    <div class="avatar-card-info">
+                        <div class="avatar-card-email">{{ avatar.email }}</div>
+                        <span class="avatar-card-status {{ avatar.status }}">{{ avatar.status }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Word Cloud for App Wishlist -->
         {% if text_responses %}
         <div class="chart-section">

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Vibe Coding Wizard Avatar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta property="og:title" content="My Vibe Coding Wizard Avatar">
+    <meta property="og:description" content="I got transformed into a Vibe Coding Network Wizard!">
+    {% if avatar and avatar.image_data %}
+    <meta property="og:image" content="data:image/png;base64,{{ avatar.image_data }}">
+    {% endif %}
+</head>
+<body>
+    <div class="container">
+        <div class="avatar-page">
+            {% if error %}
+            <div class="avatar-error">
+                <h1>Avatar Not Found</h1>
+                <p>{{ error }}</p>
+                <a href="{{ url_for('survey') }}" class="btn">Take the Survey</a>
+            </div>
+
+            {% elif avatar.status == 'pending' %}
+            <div class="avatar-pending">
+                <div class="spinner large"></div>
+                <h1>Your Avatar is Being Created</h1>
+                <p>Our AI wizard is working on your transformation...</p>
+                <p class="refresh-hint">This page will auto-refresh in a few seconds.</p>
+            </div>
+            <script>
+                setTimeout(function() { location.reload(); }, 5000);
+            </script>
+
+            {% elif avatar.status == 'failed' %}
+            <div class="avatar-failed">
+                <h1>Avatar Generation Failed</h1>
+                <p>We're sorry, but we couldn't generate your avatar.</p>
+                {% if avatar.error_message %}
+                <p class="error-detail">Error: {{ avatar.error_message }}</p>
+                {% endif %}
+                <a href="{{ url_for('survey') }}" class="btn">Try Again</a>
+            </div>
+
+            {% elif avatar.status == 'completed' %}
+            <div class="avatar-complete">
+                <h1>Your Vibe Coding Wizard Avatar!</h1>
+                <p class="avatar-subtitle">Transformed with AI magic</p>
+
+                <div class="avatar-image-container">
+                    <img src="data:image/png;base64,{{ avatar.image_data }}"
+                         alt="Your Vibe Coding Wizard Avatar"
+                         class="avatar-image"
+                         id="avatar-image">
+                </div>
+
+                <div class="avatar-actions">
+                    <button class="btn download-btn" onclick="downloadAvatar()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download
+                    </button>
+                    <button class="btn share-btn" onclick="shareAvatar()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="18" cy="5" r="3"/>
+                            <circle cx="6" cy="12" r="3"/>
+                            <circle cx="18" cy="19" r="3"/>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                        </svg>
+                        Share
+                    </button>
+                </div>
+
+                <p class="created-date">Created: {{ avatar.created_at.strftime('%B %d, %Y') if avatar.created_at else 'Just now' }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function downloadAvatar() {
+            const img = document.getElementById('avatar-image');
+            const link = document.createElement('a');
+            link.download = 'vibe-coding-wizard-avatar.png';
+            link.href = img.src;
+            link.click();
+        }
+
+        async function shareAvatar() {
+            const shareData = {
+                title: 'My Vibe Coding Wizard Avatar',
+                text: 'Check out my AI-generated Vibe Coding Wizard avatar!',
+                url: window.location.href
+            };
+
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                } else {
+                    // Fallback: copy to clipboard
+                    await navigator.clipboard.writeText(window.location.href);
+                    alert('Link copied to clipboard!');
+                }
+            } catch (err) {
+                console.log('Share failed:', err);
+            }
+        }
+    </script>
+</body>
+</html>

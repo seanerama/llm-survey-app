@@ -11,6 +11,18 @@
         <div class="thanks-message">
             <h1>Thank You!</h1>
             <p>Your response has been recorded.</p>
+
+            {% if avatar_queued %}
+            <div class="avatar-status">
+                <div class="avatar-processing">
+                    <div class="spinner"></div>
+                    <h3>Your Wizard Avatar is Being Created!</h3>
+                    <p>We're using AI to transform your selfie into a Vibe Coding Network Wizard.</p>
+                    <p class="email-notice">You'll receive an email at <strong>{{ email }}</strong> when it's ready.</p>
+                </div>
+            </div>
+            {% endif %}
+
             <a href="{{ url_for('survey') }}" class="btn">Submit Another Response</a>
         </div>
     </div>
