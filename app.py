@@ -177,15 +177,23 @@ def get_avatar_count(email):
 
 def generate_avatar_async(avatar_id, email, selfie_base64):
     """Background task to generate avatar using Gemini."""
+    print(f"[AVATAR] Starting generation for avatar_id={avatar_id}, email={email}")
+
     try:
         if not GEMINI_API_KEY:
             raise Exception("Gemini API key not configured")
 
+        print(f"[AVATAR] API key present (length: {len(GEMINI_API_KEY)})")
+
         # Initialize Gemini client
+        print("[AVATAR] Initializing Gemini client...")
         client = genai.Client(api_key=GEMINI_API_KEY)
+        print("[AVATAR] Gemini client initialized")
 
         # Decode the selfie image
+        print(f"[AVATAR] Decoding selfie image (base64 length: {len(selfie_base64)})")
         image_data = base64.b64decode(selfie_base64.split(',')[1] if ',' in selfie_base64 else selfie_base64)
+        print(f"[AVATAR] Image decoded successfully (size: {len(image_data)} bytes)")
 
         # Create the prompt for avatar generation
         prompt = """Transform this photo into a stylized illustrated avatar of a mystical "Vibe Coding Network Wizard".
@@ -202,8 +210,11 @@ The avatar should:
 Make it fun and shareable - something they'd be proud to use as a profile picture!"""
 
         # Upload the image and generate
+        model_name = "gemini-2.0-flash-preview-image-generation"
+        print(f"[AVATAR] Calling Gemini API with model: {model_name}")
+
         response = client.models.generate_content(
-            model="gemini-3-pro-image-preview",
+            model=model_name,
             contents=[
                 types.Content(
                     parts=[
@@ -217,15 +228,26 @@ Make it fun and shareable - something they'd be proud to use as a profile pictur
             )
         )
 
+        print(f"[AVATAR] Gemini API response received")
+        print(f"[AVATAR] Response candidates: {len(response.candidates) if response.candidates else 0}")
+
         # Extract the generated image
         generated_image = None
-        for part in response.candidates[0].content.parts:
-            if part.inline_data:
-                generated_image = base64.b64encode(part.inline_data.data).decode('utf-8')
-                break
+        if response.candidates:
+            print(f"[AVATAR] Candidate 0 parts: {len(response.candidates[0].content.parts) if response.candidates[0].content.parts else 0}")
+            for i, part in enumerate(response.candidates[0].content.parts):
+                print(f"[AVATAR] Part {i}: has_inline_data={part.inline_data is not None}, has_text={part.text is not None if hasattr(part, 'text') else 'N/A'}")
+                if part.inline_data:
+                    print(f"[AVATAR] Found inline_data, mime_type={part.inline_data.mime_type}, size={len(part.inline_data.data)} bytes")
+                    generated_image = base64.b64encode(part.inline_data.data).decode('utf-8')
+                    break
+                elif hasattr(part, 'text') and part.text:
+                    print(f"[AVATAR] Text response: {part.text[:200]}...")
 
         if not generated_image:
-            raise Exception("No image generated in response")
+            raise Exception("No image generated in response - check logs for details")
+
+        print(f"[AVATAR] Image generated successfully (base64 length: {len(generated_image)})")
 
         # Update database with success
         conn = get_db()
@@ -238,12 +260,17 @@ Make it fun and shareable - something they'd be proud to use as a profile pictur
         conn.commit()
         cur.close()
         conn.close()
+        print(f"[AVATAR] Database updated with completed status")
 
         # Send email notification
+        print(f"[AVATAR] Sending email notification to {email}")
         send_avatar_email(email, avatar_id)
+        print(f"[AVATAR] Generation complete for avatar_id={avatar_id}")
 
     except Exception as e:
-        print(f"Avatar generation error: {e}")
+        import traceback
+        print(f"[AVATAR ERROR] Avatar generation failed: {e}")
+        print(f"[AVATAR ERROR] Traceback: {traceback.format_exc()}")
         # Update database with error
         conn = get_db()
         cur = conn.cursor()
@@ -255,6 +282,7 @@ Make it fun and shareable - something they'd be proud to use as a profile pictur
         conn.commit()
         cur.close()
         conn.close()
+        print(f"[AVATAR ERROR] Database updated with failed status")
 
 
 def send_avatar_email(email, avatar_id):
