@@ -210,7 +210,7 @@ The avatar should:
 Make it fun and shareable - something they'd be proud to use as a profile picture!"""
 
         # Upload the image and generate
-        model_name = "gemini-2.0-flash-preview-image-generation"
+        model_name = "gemini-3-pro-image-preview"
         print(f"[AVATAR] Calling Gemini API with model: {model_name}")
 
         response = client.models.generate_content(
