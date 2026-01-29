@@ -153,6 +153,21 @@ def init_db():
         )
     ''')
 
+    # Create vibe_plans table
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS vibe_plans (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            response_id INTEGER REFERENCES responses(id),
+            email VARCHAR(255) NOT NULL,
+            wishlist_input TEXT NOT NULL,
+            plan_content TEXT,
+            status VARCHAR(50) DEFAULT 'pending',
+            error_message TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            completed_at TIMESTAMP
+        )
+    ''')
+
     # Create index for email lookups
     cur.execute('''
         CREATE INDEX IF NOT EXISTS idx_avatars_email ON avatars(email)
