@@ -106,6 +106,62 @@ SURVEY_CONFIG = {
             'type': 'textarea',
             'label': 'What\'s one platform/app you use daily that you wish you could just chat with or automate?',
             'required': False
+        },
+        {
+            'id': 'avatar_universe',
+            'type': 'single_select',
+            'label': 'Pick your universe',
+            'description': 'Choose the aesthetic world for your avatar',
+            'options': [
+                {'value': 'scifi', 'label': 'Sci-Fi'},
+                {'value': 'fantasy', 'label': 'Fantasy'},
+                {'value': 'cyberpunk', 'label': 'Cyberpunk'},
+                {'value': 'retro', 'label': 'Retro/Arcade'},
+                {'value': 'nature', 'label': 'Nature'},
+                {'value': 'steampunk', 'label': 'Steampunk'},
+                {'value': 'cosmic', 'label': 'Space/Cosmic'},
+                {'value': 'postapoc', 'label': 'Post-Apocalyptic'},
+                {'value': 'noir', 'label': 'Noir/Detective'},
+                {'value': 'underwater', 'label': 'Underwater'},
+            ],
+            'required': False
+        },
+        {
+            'id': 'avatar_fuels',
+            'type': 'multi_select_exact',
+            'label': 'What fuels you?',
+            'description': 'Select exactly 3 interests',
+            'select_count': 3,
+            'options': [
+                {'value': 'gaming', 'label': 'Gaming'},
+                {'value': 'music', 'label': 'Music'},
+                {'value': 'sports', 'label': 'Sports'},
+                {'value': 'coffee', 'label': 'Coffee'},
+                {'value': 'code', 'label': 'Code'},
+                {'value': 'movies', 'label': 'Movies/Film'},
+                {'value': 'travel', 'label': 'Travel'},
+                {'value': 'art', 'label': 'Art/Design'},
+                {'value': 'fitness', 'label': 'Fitness'},
+                {'value': 'books', 'label': 'Books/Reading'},
+            ],
+            'required': False
+        },
+        {
+            'id': 'avatar_element',
+            'type': 'single_select',
+            'label': 'Your element?',
+            'description': 'Choose your magical power source',
+            'options': [
+                {'value': 'fire', 'label': 'Fire'},
+                {'value': 'lightning', 'label': 'Lightning'},
+                {'value': 'ice', 'label': 'Ice'},
+                {'value': 'earth', 'label': 'Earth'},
+                {'value': 'digital', 'label': 'Digital/Glitch'},
+                {'value': 'shadow', 'label': 'Shadow/Dark'},
+                {'value': 'cosmic', 'label': 'Cosmic/Stars'},
+                {'value': 'crystal', 'label': 'Crystal'},
+            ],
+            'required': False
         }
     ]
 }
@@ -376,6 +432,15 @@ def submit():
         qid = question['id']
         if question['type'] == 'checkbox':
             responses[qid] = request.form.getlist(qid)
+        elif question['type'] == 'multi_select_exact':
+            values = request.form.getlist(qid)
+            # Validate exact count if provided
+            if values:
+                expected_count = question.get('select_count', 3)
+                if len(values) != expected_count:
+                    print(f"Warning: {qid} has {len(values)} items, expected {expected_count}")
+                    values = []  # Clear invalid data
+            responses[qid] = values
         else:
             responses[qid] = request.form.get(qid, '')
 

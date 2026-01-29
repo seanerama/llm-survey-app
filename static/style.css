@@ -218,6 +218,66 @@ h1 {
     height: 18px;
 }
 
+/* Avatar preference cards */
+.single-select-grid,
+.multi-select-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+}
+
+.option-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.option-card:hover {
+    border-color: #3498db;
+    background: #f8f9fa;
+}
+
+.option-card input {
+    display: none;
+}
+
+.option-card input:checked + .option-text {
+    color: #3498db;
+    font-weight: 600;
+}
+
+.option-card:has(input:checked) {
+    border-color: #3498db;
+    background: #e8f4fd;
+}
+
+.option-card input:disabled + .option-text {
+    opacity: 0.5;
+}
+
+.option-card:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.selection-counter {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.selection-counter.complete {
+    color: #27ae60;
+    font-weight: 600;
+}
+
 /* Submit Button */
 .submit-btn {
     width: 100%;
@@ -622,6 +682,18 @@ h1 {
     .option-label input {
         width: 22px;
         height: 22px;
+    }
+
+    /* Preference cards on mobile */
+    .single-select-grid,
+    .multi-select-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .option-card {
+        padding: 0.75rem;
+        font-size: 14px;
     }
 
     /* Textarea */

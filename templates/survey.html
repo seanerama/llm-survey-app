@@ -103,6 +103,31 @@
                     </label>
                     {% endfor %}
                 </div>
+
+                {% elif question.type == 'single_select' %}
+                <div class="options-group single-select-grid">
+                    {% for option in question.options %}
+                    <label class="option-label option-card">
+                        <input type="radio" name="{{ question.id }}" value="{{ option.value }}"
+                               {% if question.required %}required{% endif %}>
+                        <span class="option-text">{{ option.label }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                {% elif question.type == 'multi_select_exact' %}
+                <div class="options-group multi-select-grid"
+                     data-select-count="{{ question.select_count }}"
+                     data-field-name="{{ question.id }}">
+                    {% for option in question.options %}
+                    <label class="option-label option-card">
+                        <input type="checkbox" name="{{ question.id }}" value="{{ option.value }}"
+                               class="multi-select-checkbox" data-group="{{ question.id }}">
+                        <span class="option-text">{{ option.label }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                <p class="selection-counter" id="{{ question.id }}-counter">Selected: 0 / {{ question.select_count }}</p>
                 {% endif %}
             </div>
             {% endfor %}
@@ -314,8 +339,49 @@
             }
         });
 
+        // Multi-select exact count validation
+        document.querySelectorAll('.multi-select-grid').forEach(grid => {
+            const selectCount = parseInt(grid.dataset.selectCount);
+            const fieldName = grid.dataset.fieldName;
+            const counter = document.getElementById(fieldName + '-counter');
+            const checkboxes = grid.querySelectorAll('input[type="checkbox"]');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const checked = grid.querySelectorAll('input:checked').length;
+                    counter.textContent = `Selected: ${checked} / ${selectCount}`;
+
+                    // Disable unchecked boxes when limit reached
+                    if (checked >= selectCount) {
+                        checkboxes.forEach(cb => {
+                            if (!cb.checked) cb.disabled = true;
+                        });
+                        counter.classList.add('complete');
+                    } else {
+                        checkboxes.forEach(cb => cb.disabled = false);
+                        counter.classList.remove('complete');
+                    }
+                });
+            });
+        });
+
         // Form validation
         document.getElementById('survey-form').addEventListener('submit', function(e) {
+            // Check multi-select-exact fields
+            const multiSelects = document.querySelectorAll('.multi-select-grid');
+            for (const grid of multiSelects) {
+                const selectCount = parseInt(grid.dataset.selectCount);
+                const fieldName = grid.dataset.fieldName;
+                const checked = grid.querySelectorAll('input:checked').length;
+
+                // Only validate if user started selecting (partial selection is invalid)
+                if (checked > 0 && checked !== selectCount) {
+                    e.preventDefault();
+                    alert(`Please select exactly ${selectCount} options for "${fieldName.replace('avatar_', '').replace('_', ' ')}"`);
+                    return false;
+                }
+            }
+
             const email = emailInput.value.trim();
             const selfie = selfieDataInput.value;
 
