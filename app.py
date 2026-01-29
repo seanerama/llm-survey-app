@@ -295,7 +295,7 @@ def send_avatar_email(email, avatar_id):
         avatar_url = f"{APP_URL}/avatar/{avatar_id}"
 
         resend.Emails.send({
-            "from": "Vibe Coding Survey <onboarding@resend.dev>",
+            "from": "Vibe Coding Survey <no-reply@seanmahoney.ai>",
             "to": email,
             "subject": "Your Vibe Coding Wizard Avatar is Ready!",
             "html": f"""
