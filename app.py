@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, Response
+from functools import wraps
 import json
 import os
 import uuid
@@ -30,6 +31,28 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY')
 APP_URL = os.environ.get('APP_URL', 'https://llm-survey-app.onrender.com')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'changeme')  # Set this in production!
+
+
+def check_admin_auth(username, password):
+    """Check if username/password is valid for admin access."""
+    return username == 'admin' and password == ADMIN_PASSWORD
+
+
+def require_admin(f):
+    """Decorator to require admin authentication."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_admin_auth(auth.username, auth.password):
+            return Response(
+                'Admin access required. Please log in.',
+                401,
+                {'WWW-Authenticate': 'Basic realm="Admin Area"'}
+            )
+        return f(*args, **kwargs)
+    return decorated
+
 
 # Initialize Resend
 if RESEND_API_KEY:
@@ -981,6 +1004,7 @@ def view_avatar(avatar_id):
 
 
 @app.route('/admin')
+@require_admin
 def admin():
     conn = get_db()
     cur = conn.cursor()
@@ -1052,6 +1076,7 @@ def admin():
 
 
 @app.route('/admin/delete/<int:response_id>', methods=['POST'])
+@require_admin
 def delete_response(response_id):
     conn = get_db()
     cur = conn.cursor()
@@ -1065,6 +1090,7 @@ def delete_response(response_id):
 
 
 @app.route('/admin/delete-avatar/<uuid:avatar_id>', methods=['POST'])
+@require_admin
 def delete_avatar(avatar_id):
     """Delete a failed avatar so user can retry."""
     conn = get_db()
@@ -1077,11 +1103,28 @@ def delete_avatar(avatar_id):
 
 
 @app.route('/admin/clear-failed-avatars', methods=['POST'])
+@require_admin
 def clear_failed_avatars():
     """Delete all failed avatars."""
     conn = get_db()
     cur = conn.cursor()
     cur.execute("DELETE FROM avatars WHERE status = 'failed'")
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for('admin'))
+
+
+@app.route('/admin/clear-all', methods=['POST'])
+@require_admin
+def clear_all_data():
+    """Delete all responses, avatars, and vibe plans. Use for testing cleanup."""
+    conn = get_db()
+    cur = conn.cursor()
+    # Delete in order to respect foreign keys
+    cur.execute('DELETE FROM vibe_plans')
+    cur.execute('DELETE FROM avatars')
+    cur.execute('DELETE FROM responses')
     conn.commit()
     cur.close()
     conn.close()

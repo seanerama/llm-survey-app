@@ -13,6 +13,9 @@
         <div class="admin-header">
             <h1>{{ config.title }}</h1>
             <p class="response-count">{{ responses|length }} response(s)</p>
+            <form action="{{ url_for('clear_all_data') }}" method="POST" style="display: inline; margin-left: 1rem;">
+                <button type="submit" class="delete-btn danger-btn" onclick="return confirm('⚠️ This will DELETE ALL responses, avatars, and vibe plans. This cannot be undone. Are you sure?')">Clear All Data</button>
+            </form>
         </div>
 
         {% if responses %}

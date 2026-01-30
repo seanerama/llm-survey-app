@@ -398,6 +398,17 @@ h1 {
     background: #c0392b;
 }
 
+.danger-btn {
+    background: #c0392b;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.danger-btn:hover {
+    background: #a93226;
+}
+
 .response-data {
     padding: 20px;
 }
