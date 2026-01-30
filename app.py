@@ -5,6 +5,7 @@ import os
 import uuid
 import base64
 import threading
+import time
 from datetime import datetime
 from io import BytesIO
 
@@ -545,6 +546,11 @@ def generate_avatar_async(avatar_id, email, selfie_base64, response_id, preferen
     """
     print(f"[AVATAR] Starting generation for avatar_id={avatar_id}, email={email}")
 
+    # Retry configuration
+    MAX_RETRIES = 3
+    BASE_DELAY = 2  # seconds
+    RETRYABLE_ERRORS = ['503', 'UNAVAILABLE', 'overloaded', '429', 'RESOURCE_EXHAUSTED']
+
     try:
         if not GEMINI_API_KEY:
             raise Exception("Gemini API key not configured")
@@ -575,26 +581,53 @@ def generate_avatar_async(avatar_id, email, selfie_base64, response_id, preferen
             print(f"[AVATAR] No preferences or incomplete preferences, using static prompt")
             prompt = FALLBACK_AVATAR_PROMPT
 
-        # Upload the image and generate
+        # Upload the image and generate with retry logic
         model_name = "gemini-3-pro-image-preview"
-        print(f"[AVATAR] Calling Gemini API with model: {model_name}")
+        response = None
+        last_error = None
 
-        response = client.models.generate_content(
-            model=model_name,
-            contents=[
-                types.Content(
-                    parts=[
-                        types.Part.from_bytes(data=image_data, mime_type="image/jpeg"),
-                        types.Part.from_text(text=prompt)
-                    ]
+        for attempt in range(MAX_RETRIES):
+            try:
+                print(f"[AVATAR] Calling Gemini API with model: {model_name} (attempt {attempt + 1}/{MAX_RETRIES})")
+
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=[
+                        types.Content(
+                            parts=[
+                                types.Part.from_bytes(data=image_data, mime_type="image/jpeg"),
+                                types.Part.from_text(text=prompt)
+                            ]
+                        )
+                    ],
+                    config=types.GenerateContentConfig(
+                        response_modalities=['image', 'text']
+                    )
                 )
-            ],
-            config=types.GenerateContentConfig(
-                response_modalities=['image', 'text']
-            )
-        )
+                # Success - break out of retry loop
+                print(f"[AVATAR] Gemini API response received on attempt {attempt + 1}")
+                break
 
-        print(f"[AVATAR] Gemini API response received")
+            except Exception as api_error:
+                last_error = api_error
+                error_str = str(api_error)
+
+                # Check if this is a retryable error
+                is_retryable = any(err in error_str for err in RETRYABLE_ERRORS)
+
+                if is_retryable and attempt < MAX_RETRIES - 1:
+                    delay = BASE_DELAY * (2 ** attempt)  # Exponential backoff: 2s, 4s, 8s
+                    print(f"[AVATAR] Retryable error on attempt {attempt + 1}: {error_str}")
+                    print(f"[AVATAR] Waiting {delay}s before retry...")
+                    time.sleep(delay)
+                else:
+                    # Not retryable or last attempt - re-raise
+                    print(f"[AVATAR] Non-retryable error or max retries reached: {error_str}")
+                    raise api_error
+
+        if response is None:
+            raise last_error or Exception("No response from Gemini API after retries")
+
         print(f"[AVATAR] Response candidates: {len(response.candidates) if response.candidates else 0}")
 
         # Extract the generated image
