@@ -12,12 +12,31 @@
             <h1>Thank You!</h1>
             <p>Your response has been recorded.</p>
 
-            {% if avatar_queued %}
+            {% if avatar_queued and plan_queued %}
+            <div class="avatar-status">
+                <div class="avatar-processing">
+                    <div class="spinner"></div>
+                    <h3>Creating Your Wizard Avatar & Vibe Coding Plan!</h3>
+                    <p>We're using AI to transform your selfie into a <strong>Vibe Coding Network Wizard</strong>
+                    and creating your personalized <strong>Vibe Coding Kickstart Plan</strong>.</p>
+                    <p class="email-notice">You'll receive an email at <strong>{{ email }}</strong> when they're ready.</p>
+                </div>
+            </div>
+            {% elif avatar_queued %}
             <div class="avatar-status">
                 <div class="avatar-processing">
                     <div class="spinner"></div>
                     <h3>Your Wizard Avatar is Being Created!</h3>
                     <p>We're using AI to transform your selfie into a Vibe Coding Network Wizard.</p>
+                    <p class="email-notice">You'll receive an email at <strong>{{ email }}</strong> when it's ready.</p>
+                </div>
+            </div>
+            {% elif plan_queued %}
+            <div class="avatar-status">
+                <div class="avatar-processing">
+                    <div class="spinner"></div>
+                    <h3>Creating Your Vibe Coding Kickstart Plan!</h3>
+                    <p>We're using AI to create a personalized guide for building your app idea.</p>
                     <p class="email-notice">You'll receive an email at <strong>{{ email }}</strong> when it's ready.</p>
                 </div>
             </div>
