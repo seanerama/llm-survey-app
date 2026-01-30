@@ -171,8 +171,8 @@ SURVEY_CONFIG = {
             'id': 'avatar_fuels',
             'type': 'multi_select_exact',
             'label': 'What fuels you?',
-            'description': 'Select exactly 3 interests',
-            'select_count': 3,
+            'description': 'Select exactly 2 interests',
+            'select_count': 2,
             'options': [
                 {'value': 'gaming', 'label': 'Gaming'},
                 {'value': 'music', 'label': 'Music'},
@@ -245,7 +245,7 @@ ELEMENT_VISUALS = {
     'crystal': 'prismatic gems, light refraction, geometric',
 }
 
-FALLBACK_AVATAR_PROMPT = """Transform this selfie into a stylized digital art portrait of a Vibe Coding Network Hero. Create an illustrated character that maintains the person's likeness but in a fun, artistic style. They should look like a confident tech-savvy champion ready to build the future. Add elements like floating code symbols, glowing energy effects, and a dynamic background. The style should be colorful and professional, suitable for a profile picture."""
+FALLBACK_AVATAR_PROMPT = """Transform this selfie into a stylized digital art portrait of a mythical hero. Create an illustrated character that maintains the person's likeness but in a fun, artistic style. They should look like a confident champion ready to build the future. Add glowing energy effects and a dynamic background. The style should be colorful and professional, suitable for a profile picture."""
 
 VIBE_PLAN_ERROR_MESSAGE = """We couldn't generate your personalized plan at this time. The presentation will cover vibe coding techniques that you can apply to your idea!"""
 
@@ -351,7 +351,7 @@ def generate_avatar_prompt(universe: str, fuels: list, element: str) -> str:
         print(f"Warning: Invalid universe '{universe}', using fallback")
         return FALLBACK_AVATAR_PROMPT
 
-    if not isinstance(fuels, list) or len(fuels) != 3:
+    if not isinstance(fuels, list) or len(fuels) != 2:
         print(f"Warning: Invalid fuels {fuels}, using fallback")
         return FALLBACK_AVATAR_PROMPT
 
@@ -386,14 +386,14 @@ Output ONLY the image generation prompt, no explanations or preamble. Keep it un
     user_prompt = f"""The user selected these preferences:
 - Universe: {universe} ({universe_desc})
 - Character type: {archetype}
-- Interests: {fuels[0]} ({fuel_descs[0]}), {fuels[1]} ({fuel_descs[1]}), {fuels[2]} ({fuel_descs[2]})
+- Interests: {fuels[0]} ({fuel_descs[0]}), {fuels[1]} ({fuel_descs[1]})
 - Element: {element} ({element_desc})
 
 Write a detailed prompt that:
 1. Keeps the person's likeness recognizable but stylized as digital art
 2. Makes them look like a {archetype} in a {universe} setting
 3. Incorporates the universe aesthetic as the overall setting/style
-4. Weaves in visual elements from their 3 interests as props, clothing, or background details
+4. Weaves in visual elements from their 2 interests as props, clothing, or background details
 5. Features their element as powers, aura, or energy effects
 6. Maintains a confident, heroic expression
 7. Creates something fun and shareable - a profile picture they'd be proud of"""
@@ -948,7 +948,7 @@ def submit():
     # Extract preferences for avatar generation
     preferences = None
     if (responses.get('avatar_universe') and
-        responses.get('avatar_fuels') and len(responses.get('avatar_fuels', [])) == 3 and
+        responses.get('avatar_fuels') and len(responses.get('avatar_fuels', [])) == 2 and
         responses.get('avatar_element')):
         preferences = {
             'avatar_universe': responses['avatar_universe'],
