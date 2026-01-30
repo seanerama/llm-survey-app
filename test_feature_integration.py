@@ -179,7 +179,7 @@ class TestSendCombinedEmail(unittest.TestCase):
 
         with patch('app.RESEND_API_KEY', None):
             with patch('app.resend') as mock_resend:
-                send_combined_email('test@example.com', '123', '<h3>Plan</h3>')
+                send_combined_email('test@example.com', '123', 'base64data', '<h3>Plan</h3>')
                 mock_resend.Emails.send.assert_not_called()
 
     def test_avatar_only_subject(self):
@@ -188,7 +188,7 @@ class TestSendCombinedEmail(unittest.TestCase):
 
         with patch('app.RESEND_API_KEY', 'test-key'):
             with patch('app.resend') as mock_resend:
-                send_combined_email('test@example.com', '123', None)
+                send_combined_email('test@example.com', '123', 'base64data', None)
                 call_args = mock_resend.Emails.send.call_args[0][0]
                 self.assertEqual(call_args['subject'], 'Your Vibe Coding Wizard Avatar is Ready!')
 
@@ -198,7 +198,7 @@ class TestSendCombinedEmail(unittest.TestCase):
 
         with patch('app.RESEND_API_KEY', 'test-key'):
             with patch('app.resend') as mock_resend:
-                send_combined_email('test@example.com', None, '<h3>Plan</h3>')
+                send_combined_email('test@example.com', None, None, '<h3>Plan</h3>')
                 call_args = mock_resend.Emails.send.call_args[0][0]
                 self.assertEqual(call_args['subject'], 'Your Vibe Coding Kickstart Plan is Ready!')
 
@@ -208,7 +208,7 @@ class TestSendCombinedEmail(unittest.TestCase):
 
         with patch('app.RESEND_API_KEY', 'test-key'):
             with patch('app.resend') as mock_resend:
-                send_combined_email('test@example.com', '123', '<h3>Plan</h3>')
+                send_combined_email('test@example.com', '123', 'base64data', '<h3>Plan</h3>')
                 call_args = mock_resend.Emails.send.call_args[0][0]
                 self.assertEqual(call_args['subject'], 'Your Wizard Avatar & Vibe Coding Plan are Ready!')
 
@@ -219,7 +219,7 @@ class TestSendCombinedEmail(unittest.TestCase):
         with patch('app.RESEND_API_KEY', 'test-key'):
             with patch('app.APP_URL', 'https://test.example.com'):
                 with patch('app.resend') as mock_resend:
-                    send_combined_email('test@example.com', 'abc-123', None)
+                    send_combined_email('test@example.com', 'abc-123', 'base64data', None)
                     call_args = mock_resend.Emails.send.call_args[0][0]
                     self.assertIn('https://test.example.com/avatar/abc-123', call_args['html'])
 
@@ -229,9 +229,25 @@ class TestSendCombinedEmail(unittest.TestCase):
 
         with patch('app.RESEND_API_KEY', 'test-key'):
             with patch('app.resend') as mock_resend:
-                send_combined_email('test@example.com', None, '<h3>My Custom Plan</h3>')
+                send_combined_email('test@example.com', None, None, '<h3>My Custom Plan</h3>')
                 call_args = mock_resend.Emails.send.call_args[0][0]
                 self.assertIn('<h3>My Custom Plan</h3>', call_args['html'])
+
+    def test_embeds_avatar_as_cid_attachment(self):
+        """Should embed avatar image as CID attachment when avatar_data provided."""
+        from app import send_combined_email
+
+        with patch('app.RESEND_API_KEY', 'test-key'):
+            with patch('app.resend') as mock_resend:
+                send_combined_email('test@example.com', 'abc-123', 'base64imagedata', None)
+                call_args = mock_resend.Emails.send.call_args[0][0]
+                # Check that attachments include the avatar with CID
+                self.assertIn('attachments', call_args)
+                self.assertEqual(len(call_args['attachments']), 1)
+                self.assertEqual(call_args['attachments'][0]['content'], 'base64imagedata')
+                self.assertEqual(call_args['attachments'][0]['content_id'], 'avatar_image')
+                # Check that HTML references the CID
+                self.assertIn('cid:avatar_image', call_args['html'])
 
 
 class TestPreferenceExtraction(unittest.TestCase):

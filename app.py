@@ -794,17 +794,18 @@ def check_and_send_email(response_id, email):
     # Only send if we have something to share
     if avatar_id or plan_content:
         print(f"[EMAIL] All tasks complete, sending combined email (avatar={avatar_id is not None}, plan={plan_content is not None})")
-        send_combined_email(email, avatar_id, plan_content)
+        send_combined_email(email, avatar_id, avatar_data, plan_content)
     else:
         print(f"[EMAIL] No successful content to send for {email}")
 
 
-def send_combined_email(email, avatar_id=None, plan_content=None):
-    """Send email with avatar link and/or vibe coding plan.
+def send_combined_email(email, avatar_id=None, avatar_data=None, plan_content=None):
+    """Send email with embedded avatar image and/or vibe coding plan.
 
     Args:
         email: Recipient email address
         avatar_id: UUID of completed avatar (optional)
+        avatar_data: Base64-encoded avatar image data (optional)
         plan_content: HTML content of vibe plan (optional)
     """
     try:
@@ -820,27 +821,29 @@ def send_combined_email(email, avatar_id=None, plan_content=None):
         else:
             subject = "Your Vibe Coding Kickstart Plan is Ready!"
 
-        # Build avatar section
+        # Build avatar section with embedded image
         avatar_section = ""
-        if avatar_id:
-            avatar_url = f"{APP_URL}/avatar/{avatar_id}"
+        attachments = []
+        if avatar_id and avatar_data:
+            # Embed image directly in email using CID
             avatar_section = f"""
                 <div style="margin: 30px 0; text-align: center;">
                     <h2 style="color: #667eea;">Your Wizard Avatar</h2>
-                    <p>Your personalized <strong>Vibe Coding Network Wizard</strong> avatar has been generated.</p>
-                    <a href="{avatar_url}"
-                       style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                              color: white;
-                              padding: 15px 30px;
-                              text-decoration: none;
-                              border-radius: 8px;
-                              font-weight: bold;
-                              display: inline-block;
-                              margin: 15px 0;">
-                        View & Download Your Avatar
-                    </a>
+                    <p>Your personalized <strong>Vibe Coding Network Wizard</strong> avatar has been generated!</p>
+                    <img src="cid:avatar_image" alt="Your Wizard Avatar"
+                         style="max-width: 400px; width: 100%; border-radius: 12px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                    <p style="font-size: 14px; color: #666; margin-top: 10px;">
+                        Right-click on the image to save it, or view full-size at:<br>
+                        <a href="{APP_URL}/avatar/{avatar_id}" style="color: #667eea;">{APP_URL}/avatar/{avatar_id}</a>
+                    </p>
                 </div>
             """
+            # Add image as CID attachment
+            attachments.append({
+                "content": avatar_data,
+                "filename": "wizard-avatar.png",
+                "content_id": "avatar_image"
+            })
 
         # Build plan section
         plan_section = ""
@@ -874,13 +877,19 @@ def send_combined_email(email, avatar_id=None, plan_content=None):
         </div>
         """
 
-        resend.Emails.send({
+        email_params = {
             "from": "Vibe Coding Survey <survey@seanmahoney.ai>",
             "to": email,
             "subject": subject,
             "html": html_content
-        })
-        print(f"[EMAIL] Combined email sent to {email}")
+        }
+
+        # Add attachments if we have an embedded avatar
+        if attachments:
+            email_params["attachments"] = attachments
+
+        resend.Emails.send(email_params)
+        print(f"[EMAIL] Combined email sent to {email} (embedded_avatar={len(attachments) > 0})")
 
     except Exception as e:
         print(f"[EMAIL ERROR] Email send error: {e}")
