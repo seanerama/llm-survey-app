@@ -27,22 +27,33 @@
             </div>
         </div>
 
-        <!-- Individual Topic Breakdown -->
+        <!-- Individual Topic Breakdown with Distribution -->
         <div class="chart-section">
-            <h2>Topic Breakdown</h2>
-            <div class="topic-bars">
-                {% for question in config.questions %}
-                {% if question.type == 'rating' %}
-                <div class="topic-bar-row">
-                    <div class="topic-label">{{ question.label }}</div>
-                    <div class="bar-container">
-                        <div class="bar-fill" style="width: {{ (stats[question.id].average / question.max_rating * 100)|int }}%"></div>
-                        <span class="bar-value">{{ stats[question.id].average }} / {{ question.max_rating }}</span>
-                    </div>
+            <h2>Response Distribution by Topic</h2>
+            {% for question in config.questions %}
+            {% if question.type == 'rating' %}
+            <div class="question-breakdown">
+                <div class="question-header">
+                    <span class="question-title">{{ question.label }}</span>
+                    <span class="question-avg">Average: <strong>{{ stats[question.id].average }}</strong> / {{ question.max_rating }} ({{ stats[question.id].count }} responses)</span>
                 </div>
-                {% endif %}
-                {% endfor %}
+                <div class="distribution-grid">
+                    {% for value in range(1, question.max_rating + 1) %}
+                    <div class="distribution-item">
+                        <div class="dist-bar-container">
+                            {% set count = stats[question.id].distribution[value] %}
+                            {% set total = stats[question.id].count %}
+                            {% set pct = (count / total * 100)|int if total > 0 else 0 %}
+                            <div class="dist-bar-fill" style="height: {{ pct }}%"></div>
+                        </div>
+                        <div class="dist-value">{{ value }}</div>
+                        <div class="dist-count">{{ count }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
+            {% endif %}
+            {% endfor %}
         </div>
 
         <!-- AI Assistant Usage -->

@@ -511,6 +511,91 @@ h1 {
     color: #333;
 }
 
+/* Question Distribution Breakdown */
+.question-breakdown {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.question-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.question-avg {
+    font-size: 14px;
+    color: #666;
+}
+
+.question-avg strong {
+    color: #3498db;
+    font-size: 16px;
+}
+
+.distribution-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 8px;
+    height: 120px;
+    padding-top: 10px;
+}
+
+.distribution-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 60px;
+}
+
+.dist-bar-container {
+    width: 100%;
+    height: 80px;
+    background: #f0f0f0;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+}
+
+.dist-bar-fill {
+    width: 100%;
+    background: linear-gradient(180deg, #3498db, #2980b9);
+    border-radius: 4px 4px 0 0;
+    min-height: 2px;
+    transition: height 0.3s ease;
+}
+
+.dist-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-top: 5px;
+    background: #e8f4fc;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.dist-count {
+    font-size: 11px;
+    color: #888;
+    margin-top: 3px;
+}
+
 /* Collapsible Responses */
 .responses-section {
     background: white;
@@ -758,6 +843,37 @@ h1 {
     .topic-label {
         flex: none;
         font-size: 13px;
+    }
+
+    .question-breakdown {
+        padding: 15px;
+    }
+
+    .question-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .question-title {
+        font-size: 14px;
+    }
+
+    .distribution-grid {
+        height: 100px;
+        gap: 4px;
+    }
+
+    .dist-bar-container {
+        height: 60px;
+    }
+
+    .dist-value {
+        font-size: 10px;
+        padding: 2px 4px;
+    }
+
+    .dist-count {
+        font-size: 10px;
     }
 
     .usage-chart-row {

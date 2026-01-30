@@ -1107,11 +1107,17 @@ def admin():
 
         if question['type'] == 'rating':
             values = []
+            max_rating = question.get('max_rating', 10)
+            # Initialize distribution with all possible values
+            distribution = {i: 0 for i in range(1, max_rating + 1)}
             for resp in responses:
                 val = resp['data'].get(qid)
                 if val:
                     try:
-                        values.append(int(val))
+                        int_val = int(val)
+                        values.append(int_val)
+                        if 1 <= int_val <= max_rating:
+                            distribution[int_val] += 1
                     except (ValueError, TypeError):
                         pass
             if values:
@@ -1119,10 +1125,11 @@ def admin():
                     'average': round(sum(values) / len(values), 1),
                     'count': len(values),
                     'min': min(values),
-                    'max': max(values)
+                    'max': max(values),
+                    'distribution': distribution
                 }
             else:
-                stats[qid] = {'average': 0, 'count': 0, 'min': 0, 'max': 0}
+                stats[qid] = {'average': 0, 'count': 0, 'min': 0, 'max': 0, 'distribution': distribution}
 
         elif question['type'] == 'multiple_choice':
             counts = {opt: 0 for opt in question['options']}
