@@ -245,7 +245,7 @@ ELEMENT_VISUALS = {
     'crystal': 'prismatic gems, light refraction, geometric',
 }
 
-FALLBACK_AVATAR_PROMPT = """Transform this selfie into a stylized digital art portrait of a Vibe Coding Network Wizard. Create an illustrated wizard character that maintains the person's likeness but in a fun, artistic style. Add magical coding elements like floating code symbols, glowing runes, and ethereal light effects. The style should be colorful and professional, suitable for a profile picture."""
+FALLBACK_AVATAR_PROMPT = """Transform this selfie into a stylized digital art portrait of a Vibe Coding Network Hero. Create an illustrated character that maintains the person's likeness but in a fun, artistic style. They should look like a confident tech-savvy champion ready to build the future. Add elements like floating code symbols, glowing energy effects, and a dynamic background. The style should be colorful and professional, suitable for a profile picture."""
 
 VIBE_PLAN_ERROR_MESSAGE = """We couldn't generate your personalized plan at this time. The presentation will cover vibe coding techniques that you can apply to your idea!"""
 
@@ -364,22 +364,39 @@ def generate_avatar_prompt(universe: str, fuels: list, element: str) -> str:
     fuel_descs = [FUEL_VISUALS.get(f, f) for f in fuels]
     element_desc = ELEMENT_VISUALS[element]
 
-    system_prompt = """You are a creative prompt engineer. Generate an image generation prompt for transforming a selfie into a stylized wizard avatar.
+    # Map universes to fitting character archetypes
+    universe_archetypes = {
+        'scifi': 'space captain, starship pilot, or galactic explorer',
+        'fantasy': 'legendary hero, mystical ranger, or arcane mage',
+        'cyberpunk': 'netrunner, street samurai, or rogue hacker',
+        'retro': 'arcade champion, pixel warrior, or retro game hero',
+        'nature': 'forest guardian, elemental druid, or nature spirit',
+        'steampunk': 'airship captain, clockwork inventor, or brass-clad adventurer',
+        'cosmic': 'cosmic voyager, astral being, or starborn guardian',
+        'postapoc': 'wasteland survivor, road warrior, or resistance fighter',
+        'noir': 'hardboiled detective, shadow operative, or mystery solver',
+        'underwater': 'deep sea explorer, ocean guardian, or aquatic adventurer',
+    }
+    archetype = universe_archetypes.get(universe, 'mythical hero')
 
-Output ONLY the image generation prompt, no explanations or preamble. Keep it under 150 words."""
+    system_prompt = """You are a creative prompt engineer. Generate an image generation prompt for transforming a selfie into a stylized character avatar.
+
+Output ONLY the image generation prompt, no explanations or preamble. Keep it under 150 words. Make the character feel powerful and heroic - like the protagonist of their own story."""
 
     user_prompt = f"""The user selected these preferences:
 - Universe: {universe} ({universe_desc})
+- Character type: {archetype}
 - Interests: {fuels[0]} ({fuel_descs[0]}), {fuels[1]} ({fuel_descs[1]}), {fuels[2]} ({fuel_descs[2]})
 - Element: {element} ({element_desc})
 
 Write a detailed prompt that:
 1. Keeps the person's likeness recognizable but stylized as digital art
-2. Incorporates the universe aesthetic as the overall setting/style
-3. Weaves in visual elements from their 3 interests as props, clothing, or background details
-4. Features their element as magical effects, aura, or energy
-5. Maintains a friendly, confident expression
-6. Creates something fun and shareable - a profile picture they'd be proud of"""
+2. Makes them look like a {archetype} in a {universe} setting
+3. Incorporates the universe aesthetic as the overall setting/style
+4. Weaves in visual elements from their 3 interests as props, clothing, or background details
+5. Features their element as powers, aura, or energy effects
+6. Maintains a confident, heroic expression
+7. Creates something fun and shareable - a profile picture they'd be proud of"""
 
     try:
         response = client.messages.create(
