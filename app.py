@@ -434,7 +434,12 @@ def generate_vibe_plan(wishlist_app: str) -> tuple:
 
     wishlist_app = wishlist_app.strip()
 
-    system_prompt = """You are a helpful AI assistant explaining how to "vibe code" - building software by describing what you want to an AI coding assistant.
+    system_prompt = """You are a helpful AI assistant explaining how to "vibe code" - building software by describing what you want to an AI coding assistant like Claude or ChatGPT. The user does NOT need to know how to code. They just describe what they want in plain English and the AI writes the code for them.
+
+IMPORTANT CONTEXT:
+- If the user mentions an existing product/platform (like ServiceNow, Salesforce, Jira, SAP, etc.), they want to build an AI-powered natural language interface TO that product - a way to chat with it, automate it, or query it using plain English. They are NOT trying to rebuild the product itself.
+- The audience is IT professionals who may have ZERO coding or DevOps experience. Assume they've never used a terminal, never deployed anything, and don't know what an API is. Explain everything simply.
+- Vibe coding means: you describe what you want, the AI writes the code, you test it, you describe fixes, repeat. No manual coding required.
 
 Create a practical kickstart guide in HTML format. Use these exact HTML tags:
 - <h3> for section headers
@@ -444,29 +449,42 @@ Create a practical kickstart guide in HTML format. Use these exact HTML tags:
 - <strong> for emphasis
 - <pre> for code/prompt blocks
 
-Keep the guide under 1500 words. Be encouraging, practical, and actionable. The audience is IT professionals who may be new to AI-assisted development."""
+Keep the guide under 1500 words. Be encouraging and emphasize that they don't need to know how to code."""
 
-    user_prompt = f"""The user wants to build or automate: "{wishlist_app}"
+    user_prompt = f"""The user wants to interact with, automate, or build something related to: "{wishlist_app}"
+
+If this is an existing product/platform, assume they want to build an AI-powered chatbot or natural language interface that connects to it - so they can ask questions or give commands in plain English instead of clicking through menus.
 
 Create a vibe coding kickstart guide with these sections:
 
 <h3>The Vision</h3>
-Brief description of what they want to build and why it's achievable with AI assistance.
+Describe what they're building (likely an AI chat interface to {wishlist_app}). Emphasize this is totally achievable without coding experience - they'll describe what they want and let Claude/ChatGPT write all the code.
 
 <h3>Suggested Tech Stack</h3>
-Recommend simple, beginner-friendly technologies. Explain why each choice.
+Recommend the SIMPLEST possible approach. Consider:
+- Python (Claude can write it all for you)
+- Streamlit or Gradio for a simple chat UI (no web development needed)
+- If {wishlist_app} has an API, mention it. If not, suggest alternatives.
+Explain each choice in plain English - no jargon.
 
 <h3>Core Features Breakdown</h3>
-List 4-6 key features, prioritized. What's MVP vs nice-to-have?
+List 3-5 key features for an MVP. Keep it simple. What's the minimum they need to have a working demo?
 
 <h3>Vibe Coding Approach</h3>
-Step-by-step process: how to describe this to an AI, what to build first, how to iterate.
+Step-by-step process assuming ZERO coding experience:
+1. What to ask Claude/ChatGPT first
+2. How to run the code it gives you (explain what a terminal is if needed)
+3. How to describe problems when something doesn't work
+4. How to iterate until it works
 
 <h3>Your First Prompt</h3>
-Give them an actual prompt they can paste into Claude or ChatGPT to get started.
+Give them an ACTUAL prompt they can copy-paste into Claude or ChatGPT right now to get started. Make it specific to their use case.
 
 <h3>Tips for Success</h3>
-3-4 practical tips for vibe coding this specific project."""
+3-4 practical tips for someone who has never coded before. Include things like:
+- Don't be afraid to say "that didn't work, here's the error message"
+- Start small and add features one at a time
+- It's okay to ask the AI to explain what the code does"""
 
     try:
         response = client.messages.create(
