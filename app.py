@@ -875,7 +875,7 @@ def send_combined_email(email, avatar_id=None, plan_content=None):
         """
 
         resend.Emails.send({
-            "from": "Vibe Coding Survey <survey@send.seanmahoney.ai>",
+            "from": "Vibe Coding Survey <survey@seanmahoney.ai>",
             "to": email,
             "subject": subject,
             "html": html_content
@@ -896,7 +896,7 @@ def send_avatar_email(email, avatar_id):
         avatar_url = f"{APP_URL}/avatar/{avatar_id}"
 
         resend.Emails.send({
-            "from": "Vibe Coding Survey <survey@send.seanmahoney.ai>",
+            "from": "Vibe Coding Survey <survey@seanmahoney.ai>",
             "to": email,
             "subject": "Your Vibe Coding Wizard Avatar is Ready!",
             "html": f"""
