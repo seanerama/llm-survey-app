@@ -218,6 +218,21 @@ h1 {
     height: 18px;
 }
 
+/* Radio with Other option grid */
+.radio-other-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+
+.other-text-container {
+    margin-top: 0.75rem;
+}
+
+.other-text-input {
+    width: 100%;
+}
+
 /* Avatar preference cards */
 .single-select-grid,
 .multi-select-grid {
@@ -781,6 +796,10 @@ h1 {
     }
 
     /* Preference cards on mobile */
+    .radio-other-grid {
+        grid-template-columns: 1fr;
+    }
+
     .single-select-grid,
     .multi-select-grid {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));

@@ -145,8 +145,18 @@ SURVEY_CONFIG = {
         },
         {
             'id': 'wishlist_app',
-            'type': 'textarea',
+            'type': 'radio_with_other',
             'label': 'What\'s one platform/app you use daily that you wish you could just chat with or automate?',
+            'options': [
+                'Email & Calendar (Outlook, Gmail)',
+                'Spreadsheets & Reports (Excel, Google Sheets)',
+                'Project Management (Jira, Trello, Asana)',
+                'Document Creation (Word, Google Docs)',
+                'CRM & Sales Tools (Salesforce, HubSpot)',
+                'File Organization & Storage (SharePoint, Drive)',
+                'Network Source of Truth (Netbox, Nautobot, Infrahub, IP Fabric, NetBrain, etc.)',
+                'Network Security (CVE reporting & mitigation, FW rule checks, etc.)'
+            ],
             'required': False
         },
         {
@@ -429,6 +439,332 @@ Write a detailed prompt that:
         return FALLBACK_AVATAR_PROMPT
 
 
+PREGENERATED_PLANS = {
+    'Email & Calendar (Outlook, Gmail)': """
+<h3>The Vision</h3>
+<p>Imagine being able to type <strong>"Schedule a meeting with the dev team next Tuesday at 2pm"</strong> or <strong>"Show me all emails from Sarah about the budget"</strong> into a simple chat interface — and have it just happen. That's what you're building: an AI-powered assistant that talks to your email and calendar so you don't have to click through menus.</p>
+<p>The best part? You don't need to write a single line of code yourself. You'll describe what you want to an AI like Claude or ChatGPT, and it writes all the code for you.</p>
+
+<h3>Suggested Tech Stack</h3>
+<ul>
+<li><strong>Python</strong> — The AI will write it all for you. You just copy, paste, and run.</li>
+<li><strong>Streamlit</strong> — Creates a simple chat-style web interface with almost no setup.</li>
+<li><strong>Microsoft Graph API</strong> (for Outlook/Microsoft 365) or <strong>Gmail API</strong> — These are the official ways to read emails and manage calendars programmatically.</li>
+<li><strong>Claude or OpenAI API</strong> — Powers the natural language understanding so you can talk in plain English.</li>
+</ul>
+
+<h3>Core Features Breakdown</h3>
+<ol>
+<li><strong>Natural language email search</strong> — Ask "What did John send me last week?" and get results.</li>
+<li><strong>Calendar event creation</strong> — Say "Block off Friday afternoon" and it creates the event.</li>
+<li><strong>Email summarization</strong> — "Summarize my unread emails" gives you a quick digest.</li>
+<li><strong>Meeting scheduling</strong> — "Find a free slot with Sarah this week" checks both calendars.</li>
+</ol>
+
+<h3>Vibe Coding Approach</h3>
+<ol>
+<li><strong>Start here:</strong> Ask Claude to build a basic Streamlit chat app that connects to the Gmail or Outlook API.</li>
+<li><strong>Run it:</strong> Open your terminal (the black window where you type commands), paste <code>streamlit run app.py</code>, and see it in your browser.</li>
+<li><strong>Iterate:</strong> If something doesn't work, copy the error message and paste it back to Claude. Say "I got this error, can you fix it?"</li>
+<li><strong>Add features one at a time:</strong> Get email reading working first, then add calendar, then add natural language commands.</li>
+</ol>
+
+<h3>Your First Prompt</h3>
+<pre>Build me a Python Streamlit app that connects to the Gmail API. It should have a chat interface where I can type "show my unread emails" and it displays them. Start with just reading emails - I'll add more features later. Include setup instructions for someone who has never used Python before.</pre>
+
+<h3>Tips for Success</h3>
+<ul>
+<li>Start with <strong>read-only</strong> features (searching/reading emails) before moving to actions (sending, scheduling).</li>
+<li>Don't be afraid to say <strong>"That didn't work, here's the error message"</strong> — the AI is great at debugging.</li>
+<li>Google/Microsoft will ask you to set up API credentials. Ask Claude to walk you through it step by step.</li>
+<li>Test with your own email first before sharing with anyone else.</li>
+</ul>""",
+
+    'Spreadsheets & Reports (Excel, Google Sheets)': """
+<h3>The Vision</h3>
+<p>What if you could just say <strong>"Create a summary report of Q4 sales by region"</strong> or <strong>"Highlight all rows where spending is over budget"</strong> instead of writing complex formulas? You're going to build a chat assistant that reads, analyzes, and updates your spreadsheets using plain English.</p>
+<p>No coding experience needed — you'll describe what you want and let AI write every line of code.</p>
+
+<h3>Suggested Tech Stack</h3>
+<ul>
+<li><strong>Python</strong> — Claude will write it all. You just run it.</li>
+<li><strong>Streamlit</strong> — Gives you a drag-and-drop file upload and chat interface instantly.</li>
+<li><strong>Pandas</strong> — A Python library that makes working with spreadsheet data incredibly easy (the AI handles this part).</li>
+<li><strong>OpenPyXL</strong> — Reads and writes Excel files directly.</li>
+</ul>
+
+<h3>Core Features Breakdown</h3>
+<ol>
+<li><strong>Upload and chat</strong> — Drag in an Excel/CSV file and ask questions about the data.</li>
+<li><strong>Natural language analysis</strong> — "What's the average sales per region?" returns an instant answer.</li>
+<li><strong>Auto-generate reports</strong> — "Create a pivot table of expenses by department" builds it for you.</li>
+<li><strong>Data cleanup</strong> — "Remove duplicate rows" or "Fix the date format in column C."</li>
+</ol>
+
+<h3>Vibe Coding Approach</h3>
+<ol>
+<li><strong>Start here:</strong> Ask Claude to build a Streamlit app where you upload a CSV file and ask questions about it.</li>
+<li><strong>Run it:</strong> Open your terminal, type <code>streamlit run app.py</code>, and open the link in your browser.</li>
+<li><strong>Iterate:</strong> Upload one of your real spreadsheets and try asking questions. If something's wrong, tell Claude.</li>
+<li><strong>Expand:</strong> Add Excel support, chart generation, and the ability to download modified files.</li>
+</ol>
+
+<h3>Your First Prompt</h3>
+<pre>Build me a Python Streamlit app where I can upload a CSV or Excel file and then ask questions about the data in a chat interface. For example, I should be able to ask "What's the total for column B?" or "Show me rows where status is Pending." Use pandas for data handling. Include setup instructions for a beginner.</pre>
+
+<h3>Tips for Success</h3>
+<ul>
+<li>Start with <strong>CSV files</strong> first (they're simpler), then add Excel support.</li>
+<li>Use a <strong>small sample spreadsheet</strong> for testing — don't start with a 100,000-row file.</li>
+<li>If the AI gives wrong answers about your data, try saying <strong>"Here are the column names: [list them]"</strong> for better results.</li>
+<li>Ask Claude to add a <strong>"Download results"</strong> button so you can save any analysis back to a file.</li>
+</ul>""",
+
+    'Project Management (Jira, Trello, Asana)': """
+<h3>The Vision</h3>
+<p>Instead of clicking through boards and forms, imagine saying <strong>"Create a bug ticket for the login page crash, high priority, assign to DevOps"</strong> or <strong>"What tickets are blocking the release?"</strong> in a simple chat. You're building an AI assistant that talks to your project management tool.</p>
+<p>You won't write any code — just describe what you want and let AI build it.</p>
+
+<h3>Suggested Tech Stack</h3>
+<ul>
+<li><strong>Python</strong> — The AI writes everything. You just run it.</li>
+<li><strong>Streamlit</strong> — Simple chat interface, no web development needed.</li>
+<li><strong>Jira REST API / Trello API / Asana API</strong> — The official way to interact with these tools programmatically.</li>
+<li><strong>Claude or OpenAI API</strong> — Understands your plain English requests and translates them to API calls.</li>
+</ul>
+
+<h3>Core Features Breakdown</h3>
+<ol>
+<li><strong>Quick ticket creation</strong> — "Create a task: Update firewall rules, assign to network team, due Friday."</li>
+<li><strong>Status queries</strong> — "What's open in the current sprint?" or "Show me all my tickets."</li>
+<li><strong>Bulk updates</strong> — "Move all QA-approved tickets to Done."</li>
+<li><strong>Sprint summaries</strong> — "Give me a summary of what shipped this sprint."</li>
+</ol>
+
+<h3>Vibe Coding Approach</h3>
+<ol>
+<li><strong>Start here:</strong> Ask Claude to build a Streamlit app that connects to Jira's REST API and lists your current tickets.</li>
+<li><strong>Run it:</strong> Open your terminal, type <code>streamlit run app.py</code>, and test it.</li>
+<li><strong>Iterate:</strong> Once reading works, ask Claude to add ticket creation through the chat interface.</li>
+<li><strong>Expand:</strong> Add natural language queries like "Show all critical bugs assigned to me."</li>
+</ol>
+
+<h3>Your First Prompt</h3>
+<pre>Build me a Python Streamlit app that connects to Jira using its REST API. Start with a simple chat interface where I can type "show my tickets" and it lists my assigned issues. I'll need instructions on how to get a Jira API token. Make it beginner-friendly — I've never used Python before.</pre>
+
+<h3>Tips for Success</h3>
+<ul>
+<li>Start with <strong>read-only</strong> actions (listing tickets) before adding create/update capabilities.</li>
+<li>You'll need an <strong>API token</strong> from your project tool — ask Claude to walk you through getting one.</li>
+<li>Test with a <strong>sandbox project</strong> first so you don't accidentally modify real work items.</li>
+<li>If your company restricts API access, check with your admin — you may need permission first.</li>
+</ul>""",
+
+    'Document Creation (Word, Google Docs)': """
+<h3>The Vision</h3>
+<p>What if you could say <strong>"Draft a change management document for the network upgrade"</strong> or <strong>"Create a weekly status report from these bullet points"</strong> and get a polished document instantly? You're building an AI assistant that creates and manages documents for you.</p>
+<p>No coding required — you describe what you want and AI builds the whole thing.</p>
+
+<h3>Suggested Tech Stack</h3>
+<ul>
+<li><strong>Python</strong> — Claude writes all the code. You just run it.</li>
+<li><strong>Streamlit</strong> — Simple interface for chatting and downloading documents.</li>
+<li><strong>python-docx</strong> — Creates Word documents programmatically.</li>
+<li><strong>Google Docs API</strong> — If you prefer Google Docs over Word files.</li>
+</ul>
+
+<h3>Core Features Breakdown</h3>
+<ol>
+<li><strong>Document generation</strong> — Describe what you need, get a formatted Word doc or Google Doc.</li>
+<li><strong>Template filling</strong> — "Fill in the change request template for server migration on March 15th."</li>
+<li><strong>Report compilation</strong> — "Combine these notes into a weekly status report."</li>
+<li><strong>Format conversion</strong> — Upload rough notes, get back a polished document.</li>
+</ol>
+
+<h3>Vibe Coding Approach</h3>
+<ol>
+<li><strong>Start here:</strong> Ask Claude to build a Streamlit app where you type a document description and it generates a downloadable Word file.</li>
+<li><strong>Run it:</strong> Open your terminal, type <code>streamlit run app.py</code>, and try it out.</li>
+<li><strong>Iterate:</strong> If the formatting isn't right, tell Claude what you want changed.</li>
+<li><strong>Expand:</strong> Add templates, upload existing docs for editing, or connect to Google Docs.</li>
+</ol>
+
+<h3>Your First Prompt</h3>
+<pre>Build me a Python Streamlit app where I can describe a document I need in a text box, and it generates a formatted Word document (.docx) that I can download. For example, if I type "weekly status report for the infrastructure team," it should create a professional document with appropriate sections. Include setup instructions for a complete beginner.</pre>
+
+<h3>Tips for Success</h3>
+<ul>
+<li>Start with <strong>Word file generation</strong> — it's simpler than the Google Docs API.</li>
+<li>Create a few <strong>document templates</strong> that match what you actually write at work.</li>
+<li>Ask Claude to add a <strong>"refine" feature</strong> where you can say "make the executive summary shorter."</li>
+<li>You can always copy-paste the AI output into your existing templates if you prefer.</li>
+</ul>""",
+
+    'CRM & Sales Tools (Salesforce, HubSpot)': """
+<h3>The Vision</h3>
+<p>Instead of navigating through endless CRM screens, imagine typing <strong>"Show me all deals closing this month over $50k"</strong> or <strong>"Log a call with Acme Corp — discussed renewal, they want a demo next week."</strong> You're building a chat interface to your CRM that saves time on every interaction.</p>
+<p>You don't need to code — just describe what you want and AI builds it for you.</p>
+
+<h3>Suggested Tech Stack</h3>
+<ul>
+<li><strong>Python</strong> — Claude writes it all. You copy, paste, and run.</li>
+<li><strong>Streamlit</strong> — Instant chat interface, no web development skills needed.</li>
+<li><strong>Salesforce REST API / HubSpot API</strong> — Official APIs to read and write CRM data.</li>
+<li><strong>Claude or OpenAI API</strong> — Translates your plain English into CRM queries and updates.</li>
+</ul>
+
+<h3>Core Features Breakdown</h3>
+<ol>
+<li><strong>Natural language queries</strong> — "Show all open opportunities for Q1" returns results instantly.</li>
+<li><strong>Quick data entry</strong> — "Add a note to the Acme Corp account: discussed pricing on Feb 5th."</li>
+<li><strong>Pipeline summaries</strong> — "Give me a forecast summary for this quarter."</li>
+<li><strong>Contact lookup</strong> — "Who's our contact at Globex? When did we last talk to them?"</li>
+</ol>
+
+<h3>Vibe Coding Approach</h3>
+<ol>
+<li><strong>Start here:</strong> Ask Claude to build a Streamlit app that connects to the Salesforce or HubSpot API and lists recent deals.</li>
+<li><strong>Run it:</strong> Open your terminal, type <code>streamlit run app.py</code>, and check the results.</li>
+<li><strong>Iterate:</strong> Once reading works, add the ability to search and filter with natural language.</li>
+<li><strong>Expand:</strong> Add note logging, contact management, and pipeline reporting.</li>
+</ol>
+
+<h3>Your First Prompt</h3>
+<pre>Build me a Python Streamlit app that connects to the Salesforce REST API (or HubSpot API). It should have a chat interface where I can type "show my open deals" and see a list of my current opportunities. Include step-by-step instructions for getting API credentials and setting up Python for the first time.</pre>
+
+<h3>Tips for Success</h3>
+<ul>
+<li>Start with <strong>read-only access</strong> to your CRM before adding write operations.</li>
+<li>Use a <strong>sandbox or developer account</strong> for testing — don't experiment with production data.</li>
+<li>Salesforce and HubSpot both have <strong>free developer accounts</strong> — ask Claude how to set one up.</li>
+<li>If you get authentication errors, paste the full error into Claude and ask it to help troubleshoot.</li>
+</ul>""",
+
+    'File Organization & Storage (SharePoint, Drive)': """
+<h3>The Vision</h3>
+<p>Tired of digging through nested folders to find that one document? Imagine saying <strong>"Find the network diagram we updated last month"</strong> or <strong>"Move all the Q4 reports into the archive folder."</strong> You're building a chat assistant that manages your files using plain English.</p>
+<p>No coding experience needed — AI writes everything for you.</p>
+
+<h3>Suggested Tech Stack</h3>
+<ul>
+<li><strong>Python</strong> — Claude handles all the code. You just run it.</li>
+<li><strong>Streamlit</strong> — Simple chat interface for file operations.</li>
+<li><strong>Microsoft Graph API</strong> (for SharePoint/OneDrive) or <strong>Google Drive API</strong> — Official file management APIs.</li>
+<li><strong>Claude or OpenAI API</strong> — Understands what you're asking for and translates it to file operations.</li>
+</ul>
+
+<h3>Core Features Breakdown</h3>
+<ol>
+<li><strong>Natural language search</strong> — "Find all PowerPoints about the budget from last quarter."</li>
+<li><strong>File organization</strong> — "Move everything in Downloads older than 30 days to Archive."</li>
+<li><strong>Content search</strong> — "Which documents mention the VPN migration?"</li>
+<li><strong>Quick sharing</strong> — "Share the project plan with the infrastructure team."</li>
+</ol>
+
+<h3>Vibe Coding Approach</h3>
+<ol>
+<li><strong>Start here:</strong> Ask Claude to build a Streamlit app that connects to Google Drive or SharePoint and lists files in a folder.</li>
+<li><strong>Run it:</strong> Open your terminal, type <code>streamlit run app.py</code>, and verify it shows your files.</li>
+<li><strong>Iterate:</strong> Add search capabilities next — "find files matching X."</li>
+<li><strong>Expand:</strong> Add move/copy operations, bulk organization, and content search.</li>
+</ol>
+
+<h3>Your First Prompt</h3>
+<pre>Build me a Python Streamlit app that connects to Google Drive (or SharePoint via Microsoft Graph API). It should have a chat interface where I can type "show files in my Documents folder" or "find files named budget." Start simple with listing and searching. Include setup instructions for someone who has never coded before.</pre>
+
+<h3>Tips for Success</h3>
+<ul>
+<li>Start with <strong>listing and searching</strong> before adding move/delete operations.</li>
+<li>Always add a <strong>confirmation step</strong> before deleting or moving files — mistakes are hard to undo.</li>
+<li>Test with a <strong>non-critical folder</strong> first — don't point it at your most important files right away.</li>
+<li>The API credentials setup can be tricky — ask Claude to guide you through it step by step.</li>
+</ul>""",
+
+    'Network Source of Truth (Netbox, Nautobot, Infrahub, IP Fabric, NetBrain, etc.)': """
+<h3>The Vision</h3>
+<p>What if you could just ask <strong>"What IP addresses are assigned in the 10.50.0.0/24 subnet?"</strong> or <strong>"Show me all switches in the NYC data center that are end-of-life"</strong> instead of clicking through your source of truth UI? You're building a natural language chat interface to your network source of truth.</p>
+<p>No coding required — you describe what you want and AI builds everything.</p>
+
+<h3>Suggested Tech Stack</h3>
+<ul>
+<li><strong>Python</strong> — Claude writes all the code. You just run it.</li>
+<li><strong>Streamlit</strong> — Gives you an instant chat interface with no web development.</li>
+<li><strong>NetBox/Nautobot REST API</strong> — These tools have excellent APIs for querying and updating network data.</li>
+<li><strong>Claude or OpenAI API</strong> — Translates your plain English into the right API calls.</li>
+</ul>
+
+<h3>Core Features Breakdown</h3>
+<ol>
+<li><strong>Device lookups</strong> — "Show me all Cisco 9300s in the Dallas site" returns a clean table.</li>
+<li><strong>IP address management</strong> — "What's the next available IP in the server VLAN?" gives you an answer instantly.</li>
+<li><strong>Circuit and connection queries</strong> — "What's connected to port Gi1/0/24 on switch NYC-ACC-01?"</li>
+<li><strong>Inventory reports</strong> — "How many devices are running IOS-XE 17.3 or older?"</li>
+<li><strong>Change planning</strong> — "List all interfaces in VLAN 100 across all sites."</li>
+</ol>
+
+<h3>Vibe Coding Approach</h3>
+<ol>
+<li><strong>Start here:</strong> Ask Claude to build a Streamlit app that connects to your NetBox/Nautobot API and lists devices.</li>
+<li><strong>Run it:</strong> Open your terminal, type <code>streamlit run app.py</code>, and verify it pulls your devices.</li>
+<li><strong>Iterate:</strong> Add natural language search — "show me all firewalls" should filter devices by role.</li>
+<li><strong>Expand:</strong> Add IP address lookups, interface queries, and the ability to create reservations.</li>
+</ol>
+
+<h3>Your First Prompt</h3>
+<pre>Build me a Python Streamlit app that connects to a NetBox instance via its REST API. It should have a chat interface where I can ask things like "show all devices in site NYC" or "what IPs are in the 10.0.1.0/24 prefix?" I'll provide the NetBox URL and API token. Include instructions for setting up Python and getting a NetBox API token.</pre>
+
+<h3>Tips for Success</h3>
+<ul>
+<li>Start with <strong>read-only queries</strong> (device lookups, IP searches) before adding create/update operations.</li>
+<li>NetBox and Nautobot both have <strong>excellent API documentation</strong> — tell Claude which platform you use and it will know the API endpoints.</li>
+<li>Use your <strong>staging/lab instance</strong> for testing, not production, especially when adding write operations.</li>
+<li>If you use IP Fabric or NetBrain, the APIs are different — just tell Claude which tool you have and it will adapt.</li>
+</ul>""",
+
+    'Network Security (CVE reporting & mitigation, FW rule checks, etc.)': """
+<h3>The Vision</h3>
+<p>Imagine asking <strong>"Are any of our Cisco devices affected by CVE-2024-20356?"</strong> or <strong>"Show me all firewall rules that allow any-to-any"</strong> and getting an instant answer. You're building an AI-powered network security assistant that checks vulnerabilities, audits firewall rules, and helps you stay on top of your security posture.</p>
+<p>You don't need to write code — you'll describe what you want and let AI build it all.</p>
+
+<h3>Suggested Tech Stack</h3>
+<ul>
+<li><strong>Python</strong> — Claude writes everything. You copy, paste, and run.</li>
+<li><strong>Streamlit</strong> — Simple chat interface, no web development needed.</li>
+<li><strong>NVD/NIST API</strong> — Free access to the National Vulnerability Database for CVE lookups.</li>
+<li><strong>Your firewall's API</strong> (Palo Alto Panorama, Fortinet FortiManager, Cisco FMC, etc.) — For pulling and auditing rules.</li>
+<li><strong>Claude or OpenAI API</strong> — Understands your security questions and generates actionable reports.</li>
+</ul>
+
+<h3>Core Features Breakdown</h3>
+<ol>
+<li><strong>CVE impact checks</strong> — "Which of our devices are affected by this CVE?" cross-references your inventory with vulnerability data.</li>
+<li><strong>Firewall rule audits</strong> — "Show me all rules with 'any' in the source or destination" flags overly permissive rules.</li>
+<li><strong>Mitigation guidance</strong> — "What's the recommended fix for CVE-2024-12345?" pulls remediation steps.</li>
+<li><strong>Compliance checks</strong> — "Do any rules violate our policy of no direct internet access from the server VLAN?"</li>
+<li><strong>Security summaries</strong> — "Give me a weekly vulnerability report for all critical-severity CVEs affecting our platform."</li>
+</ol>
+
+<h3>Vibe Coding Approach</h3>
+<ol>
+<li><strong>Start here:</strong> Ask Claude to build a Streamlit app that queries the NVD API for CVE details when you type a CVE ID.</li>
+<li><strong>Run it:</strong> Open your terminal, type <code>streamlit run app.py</code>, and test with a known CVE.</li>
+<li><strong>Iterate:</strong> Add the ability to cross-reference CVEs against a list of your devices and software versions.</li>
+<li><strong>Expand:</strong> Connect to your firewall's API to pull rules and run audit checks via chat.</li>
+</ol>
+
+<h3>Your First Prompt</h3>
+<pre>Build me a Python Streamlit app for network security. It should have a chat interface where I can type a CVE ID (like CVE-2024-20356) and it pulls the details from the NIST NVD API — severity, affected products, and remediation info. Also let me upload a CSV of my network devices (hostname, vendor, OS version) and ask "which of my devices are affected by this CVE?" Include beginner-friendly setup instructions.</pre>
+
+<h3>Tips for Success</h3>
+<ul>
+<li>Start with <strong>CVE lookups against the free NVD API</strong> before trying to connect to firewalls — it's the easiest win.</li>
+<li>Keep a <strong>CSV inventory of your devices</strong> (hostname, vendor, OS, version) — this is the simplest way to cross-reference vulnerabilities.</li>
+<li>When connecting to firewall APIs, always use <strong>read-only credentials</strong> — you never want an AI assistant accidentally modifying security rules.</li>
+<li>Ask Claude to add <strong>severity filtering</strong> — most teams only need to act on Critical and High CVEs immediately.</li>
+</ul>""",
+}
+
+
 def generate_vibe_plan(wishlist_app: str) -> tuple:
     """
     Generate a vibe coding kickstart plan for the user's app idea.
@@ -699,7 +1035,14 @@ def generate_plan_async(plan_id, email, wishlist_app, response_id):
     print(f"[PLAN] Starting generation for plan_id={plan_id}, email={email}")
 
     try:
-        plan_content, success = generate_vibe_plan(wishlist_app)
+        # Check for pre-generated plan first (for predefined radio options)
+        if wishlist_app in PREGENERATED_PLANS:
+            print(f"[PLAN] Using pre-generated plan for: {wishlist_app}")
+            plan_content = PREGENERATED_PLANS[wishlist_app]
+            success = True
+        else:
+            print(f"[PLAN] Custom 'Other' input, calling Claude API: {wishlist_app}")
+            plan_content, success = generate_vibe_plan(wishlist_app)
 
         conn = get_db()
         cur = conn.cursor()
@@ -971,6 +1314,12 @@ def submit():
         qid = question['id']
         if question['type'] == 'checkbox':
             responses[qid] = request.form.getlist(qid)
+        elif question['type'] == 'radio_with_other':
+            value = request.form.get(qid, '')
+            if value == '__other__':
+                # Use the custom text from the "Other" field
+                value = request.form.get(f'{qid}_other_text', '').strip()
+            responses[qid] = value
         elif question['type'] == 'multi_select_exact':
             values = request.form.getlist(qid)
             # Validate exact count if provided

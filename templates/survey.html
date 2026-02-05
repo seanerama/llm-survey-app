@@ -115,6 +115,30 @@
                     {% endfor %}
                 </div>
 
+                {% elif question.type == 'radio_with_other' %}
+                <div class="options-group radio-other-grid">
+                    {% for option in question.options %}
+                    <label class="option-label option-card">
+                        <input type="radio" name="{{ question.id }}" value="{{ option }}"
+                               {% if question.required %}required{% endif %}
+                               class="radio-with-other-input" data-group="{{ question.id }}">
+                        <span class="option-text">{{ option }}</span>
+                    </label>
+                    {% endfor %}
+                    <label class="option-label option-card option-card-other">
+                        <input type="radio" name="{{ question.id }}" value="__other__"
+                               {% if question.required %}required{% endif %}
+                               class="radio-with-other-input radio-other-trigger" data-group="{{ question.id }}">
+                        <span class="option-text">Other</span>
+                    </label>
+                </div>
+                <div class="other-text-container" id="{{ question.id }}-other-container" style="display: none;">
+                    <input type="text" name="{{ question.id }}_other_text"
+                           placeholder="Type your answer..."
+                           class="text-input other-text-input"
+                           id="{{ question.id }}-other-text">
+                </div>
+
                 {% elif question.type == 'multi_select_exact' %}
                 <div class="options-group multi-select-grid"
                      data-select-count="{{ question.select_count }}"
@@ -337,6 +361,26 @@
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
             }
+        });
+
+        // Radio with "Other" text field toggle
+        document.querySelectorAll('.radio-other-grid').forEach(grid => {
+            const radios = grid.querySelectorAll('.radio-with-other-input');
+            const groupName = radios[0]?.getAttribute('data-group');
+            const otherContainer = document.getElementById(groupName + '-other-container');
+            const otherText = document.getElementById(groupName + '-other-text');
+
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    if (radio.value === '__other__') {
+                        otherContainer.style.display = 'block';
+                        otherText.focus();
+                    } else {
+                        otherContainer.style.display = 'none';
+                        otherText.value = '';
+                    }
+                });
+            });
         });
 
         // Multi-select exact count validation
