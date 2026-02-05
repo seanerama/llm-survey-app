@@ -469,8 +469,9 @@ PREGENERATED_PLANS = {
 <li><strong>Add features one at a time:</strong> Get email reading working first, then add calendar, then add natural language commands.</li>
 </ol>
 
-<h3>Your First Prompt</h3>
-<pre>Build me a Python Streamlit app that connects to the Gmail API. It should have a chat interface where I can type "show my unread emails" and it displays them. Start with just reading emails - I'll add more features later. Include setup instructions for someone who has never used Python before.</pre>
+<h3>Want to Get Started?</h3>
+<p>Interested in building this? Connect with me on LinkedIn and I'd be happy to help you take the first step!</p>
+<p><a href="https://www.linkedin.com/in/seandavidmahoney/" style="color: #667eea; font-weight: bold;">Connect with Sean on LinkedIn</a></p>
 
 <h3>Tips for Success</h3>
 <ul>
@@ -509,8 +510,9 @@ PREGENERATED_PLANS = {
 <li><strong>Expand:</strong> Add Excel support, chart generation, and the ability to download modified files.</li>
 </ol>
 
-<h3>Your First Prompt</h3>
-<pre>Build me a Python Streamlit app where I can upload a CSV or Excel file and then ask questions about the data in a chat interface. For example, I should be able to ask "What's the total for column B?" or "Show me rows where status is Pending." Use pandas for data handling. Include setup instructions for a beginner.</pre>
+<h3>Want to Get Started?</h3>
+<p>Interested in building this? Connect with me on LinkedIn and I'd be happy to help you take the first step!</p>
+<p><a href="https://www.linkedin.com/in/seandavidmahoney/" style="color: #667eea; font-weight: bold;">Connect with Sean on LinkedIn</a></p>
 
 <h3>Tips for Success</h3>
 <ul>
@@ -549,8 +551,9 @@ PREGENERATED_PLANS = {
 <li><strong>Expand:</strong> Add natural language queries like "Show all critical bugs assigned to me."</li>
 </ol>
 
-<h3>Your First Prompt</h3>
-<pre>Build me a Python Streamlit app that connects to Jira using its REST API. Start with a simple chat interface where I can type "show my tickets" and it lists my assigned issues. I'll need instructions on how to get a Jira API token. Make it beginner-friendly — I've never used Python before.</pre>
+<h3>Want to Get Started?</h3>
+<p>Interested in building this? Connect with me on LinkedIn and I'd be happy to help you take the first step!</p>
+<p><a href="https://www.linkedin.com/in/seandavidmahoney/" style="color: #667eea; font-weight: bold;">Connect with Sean on LinkedIn</a></p>
 
 <h3>Tips for Success</h3>
 <ul>
@@ -589,8 +592,9 @@ PREGENERATED_PLANS = {
 <li><strong>Expand:</strong> Add templates, upload existing docs for editing, or connect to Google Docs.</li>
 </ol>
 
-<h3>Your First Prompt</h3>
-<pre>Build me a Python Streamlit app where I can describe a document I need in a text box, and it generates a formatted Word document (.docx) that I can download. For example, if I type "weekly status report for the infrastructure team," it should create a professional document with appropriate sections. Include setup instructions for a complete beginner.</pre>
+<h3>Want to Get Started?</h3>
+<p>Interested in building this? Connect with me on LinkedIn and I'd be happy to help you take the first step!</p>
+<p><a href="https://www.linkedin.com/in/seandavidmahoney/" style="color: #667eea; font-weight: bold;">Connect with Sean on LinkedIn</a></p>
 
 <h3>Tips for Success</h3>
 <ul>
@@ -629,8 +633,9 @@ PREGENERATED_PLANS = {
 <li><strong>Expand:</strong> Add note logging, contact management, and pipeline reporting.</li>
 </ol>
 
-<h3>Your First Prompt</h3>
-<pre>Build me a Python Streamlit app that connects to the Salesforce REST API (or HubSpot API). It should have a chat interface where I can type "show my open deals" and see a list of my current opportunities. Include step-by-step instructions for getting API credentials and setting up Python for the first time.</pre>
+<h3>Want to Get Started?</h3>
+<p>Interested in building this? Connect with me on LinkedIn and I'd be happy to help you take the first step!</p>
+<p><a href="https://www.linkedin.com/in/seandavidmahoney/" style="color: #667eea; font-weight: bold;">Connect with Sean on LinkedIn</a></p>
 
 <h3>Tips for Success</h3>
 <ul>
@@ -669,8 +674,9 @@ PREGENERATED_PLANS = {
 <li><strong>Expand:</strong> Add move/copy operations, bulk organization, and content search.</li>
 </ol>
 
-<h3>Your First Prompt</h3>
-<pre>Build me a Python Streamlit app that connects to Google Drive (or SharePoint via Microsoft Graph API). It should have a chat interface where I can type "show files in my Documents folder" or "find files named budget." Start simple with listing and searching. Include setup instructions for someone who has never coded before.</pre>
+<h3>Want to Get Started?</h3>
+<p>Interested in building this? Connect with me on LinkedIn and I'd be happy to help you take the first step!</p>
+<p><a href="https://www.linkedin.com/in/seandavidmahoney/" style="color: #667eea; font-weight: bold;">Connect with Sean on LinkedIn</a></p>
 
 <h3>Tips for Success</h3>
 <ul>
@@ -710,8 +716,9 @@ PREGENERATED_PLANS = {
 <li><strong>Expand:</strong> Add IP address lookups, interface queries, and the ability to create reservations.</li>
 </ol>
 
-<h3>Your First Prompt</h3>
-<pre>Build me a Python Streamlit app that connects to a NetBox instance via its REST API. It should have a chat interface where I can ask things like "show all devices in site NYC" or "what IPs are in the 10.0.1.0/24 prefix?" I'll provide the NetBox URL and API token. Include instructions for setting up Python and getting a NetBox API token.</pre>
+<h3>Want to Get Started?</h3>
+<p>Interested in building this? Connect with me on LinkedIn and I'd be happy to help you take the first step!</p>
+<p><a href="https://www.linkedin.com/in/seandavidmahoney/" style="color: #667eea; font-weight: bold;">Connect with Sean on LinkedIn</a></p>
 
 <h3>Tips for Success</h3>
 <ul>
@@ -752,8 +759,9 @@ PREGENERATED_PLANS = {
 <li><strong>Expand:</strong> Connect to your firewall's API to pull rules and run audit checks via chat.</li>
 </ol>
 
-<h3>Your First Prompt</h3>
-<pre>Build me a Python Streamlit app for network security. It should have a chat interface where I can type a CVE ID (like CVE-2024-20356) and it pulls the details from the NIST NVD API — severity, affected products, and remediation info. Also let me upload a CSV of my network devices (hostname, vendor, OS version) and ask "which of my devices are affected by this CVE?" Include beginner-friendly setup instructions.</pre>
+<h3>Want to Get Started?</h3>
+<p>Interested in building this? Connect with me on LinkedIn and I'd be happy to help you take the first step!</p>
+<p><a href="https://www.linkedin.com/in/seandavidmahoney/" style="color: #667eea; font-weight: bold;">Connect with Sean on LinkedIn</a></p>
 
 <h3>Tips for Success</h3>
 <ul>
@@ -831,8 +839,10 @@ Step-by-step process assuming ZERO coding experience:
 3. How to describe problems when something doesn't work
 4. How to iterate until it works
 
-<h3>Your First Prompt</h3>
-Give them an ACTUAL prompt they can copy-paste into Claude or ChatGPT right now to get started. Make it specific to their use case.
+<h3>Want to Get Started?</h3>
+Include this exact HTML:
+<p>Interested in building this? Connect with me on LinkedIn and I'd be happy to help you take the first step!</p>
+<p><a href="https://www.linkedin.com/in/seandavidmahoney/" style="color: #667eea; font-weight: bold;">Connect with Sean on LinkedIn</a></p>
 
 <h3>Tips for Success</h3>
 3-4 practical tips for someone who has never coded before. Include things like:
